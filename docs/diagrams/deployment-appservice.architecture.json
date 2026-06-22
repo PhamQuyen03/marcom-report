@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Deployment Diagram - Azure App Service",
+    "subtitle": "Managed hosting with version path and latest alias mapping",
+    "output": "deployment-appservice.html",
+    "viewBox": [1520, 640]
+  },
+  "components": [
+    { "id": "repo", "type": "external", "label": "Repository", "sublabel": "reports/*/v*/", "pos": [40, 280], "size": [150, 72] },
+    { "id": "pipeline", "type": "backend", "label": "Azure DevOps", "sublabel": "build + release", "pos": [250, 280], "size": [160, 72] },
+    { "id": "artifact", "type": "cloud", "label": "Artifact", "sublabel": "deploy package", "pos": [470, 280], "size": [150, 72] },
+    { "id": "app", "type": "cloud", "label": "Azure App Service", "sublabel": "content root", "pos": [700, 280], "size": [180, 72] },
+    { "id": "version", "type": "frontend", "label": "/slug/v2/", "sublabel": "permanent URL", "pos": [980, 220], "size": [150, 72] },
+    { "id": "latest", "type": "frontend", "label": "/slug/latest/", "sublabel": "alias or rewrite", "pos": [980, 360], "size": [150, 72] },
+    { "id": "domain", "type": "cloud", "label": "Custom Domain", "sublabel": "public endpoint", "pos": [1210, 280], "size": [150, 72] },
+    { "id": "users", "type": "external", "label": "Users", "sublabel": "public access", "pos": [1430, 280], "size": [90, 72] },
+    { "id": "status", "type": "backend", "label": "Deploy Result", "sublabel": "success or failure", "pos": [980, 500], "size": [150, 72] },
+    { "id": "teams", "type": "external", "label": "Microsoft Teams", "sublabel": "notify channel", "pos": [1210, 500], "size": [170, 72] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Managed Azure Hosting", "wraps": ["app", "version", "latest", "domain", "status"], "pad": 22 },
+    { "kind": "region", "label": "Notification", "wraps": ["teams"], "pad": 22 }
+  ],
+  "connections": [
+    { "from": "repo", "to": "pipeline", "label": "trigger", "variant": "emphasis" },
+    { "from": "pipeline", "to": "artifact", "label": "package", "variant": "emphasis" },
+    { "from": "artifact", "to": "app", "label": "deploy", "variant": "emphasis" },
+    { "from": "app", "to": "version", "variant": "default", "fromSide": "right", "toSide": "left" },
+    { "from": "app", "to": "latest", "variant": "security", "fromSide": "right", "toSide": "left" },
+    { "from": "version", "to": "domain", "variant": "default", "fromSide": "right", "toSide": "left", "via": [[1130, 256], [1130, 316], [1210, 316]] },
+    { "from": "latest", "to": "domain", "variant": "emphasis", "fromSide": "right", "toSide": "left", "via": [[1130, 396], [1130, 316], [1210, 316]] },
+    { "from": "domain", "to": "users", "variant": "emphasis" },
+    { "from": "app", "to": "status", "label": "deploy + smoke check", "variant": "default", "fromSide": "bottom", "toSide": "top", "via": [[790, 352], [790, 536], [980, 536]], "labelAt": [790, 500] },
+    { "from": "status", "to": "teams", "variant": "security", "fromSide": "right", "toSide": "left" }
+  ],
+  "cards": [
+    { "dot": "amber", "title": "Rollback", "items": ["Restore artifact cũ", "Re-point latest về version trước đó"] },
+    { "dot": "rose", "title": "Notification", "items": ["Success và failure đều gửi về Microsoft Teams"] }
+  ]
+}

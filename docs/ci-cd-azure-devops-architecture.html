@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CI/CD Azure DevOps cho nhiều báo cáo HTML</title>
+  <style>
+    :root {
+      --bg: #f6efe7;
+      --panel: #fffaf5;
+      --card: #ffffff;
+      --text: #201a17;
+      --muted: #6d6259;
+      --line: #dfd1c4;
+      --accent: #a44d30;
+      --accent-soft: #f4dfd4;
+      --green-soft: #e4f1ea;
+      --green: #245d49;
+      --shadow: 0 18px 48px rgba(65, 42, 22, 0.08);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(164, 77, 48, 0.10), transparent 28%),
+        linear-gradient(180deg, #f8f2ec 0%, #f3ece5 100%);
+      line-height: 1.6;
+    }
+    .page {
+      width: min(1280px, calc(100% - 28px));
+      margin: 24px auto 40px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(131, 101, 72, 0.16);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(164, 77, 48, 0.08), rgba(255, 255, 255, 0.96)),
+        var(--card);
+    }
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+    h1 { font-size: clamp(30px, 5vw, 46px); }
+    h2 { font-size: 26px; }
+    h3 { font-size: 18px; }
+    p { margin: 0 0 12px; }
+    .subtitle {
+      color: var(--muted);
+      max-width: 900px;
+      font-size: 17px;
+    }
+    .grid-2, .grid-4 {
+      display: grid;
+      gap: 16px;
+    }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card, .callout {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .list {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .list li { margin: 6px 0; }
+    code {
+      background: #f4ece4;
+      border-radius: 8px;
+      padding: 2px 6px;
+      font-family: Consolas, monospace;
+      font-size: 0.95em;
+    }
+    pre {
+      margin: 10px 0 0;
+      padding: 18px;
+      background: #201b18;
+      color: #f8f0e8;
+      border-radius: 16px;
+      overflow: auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+    .diagram-frame {
+      width: 100%;
+      height: 980px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f5ece3;
+      font-size: 14px;
+    }
+    tr:last-child td { border-bottom: 0; }
+    @media (max-width: 980px) {
+      .grid-2, .grid-4 { grid-template-columns: 1fr; }
+      .title-row { flex-direction: column; }
+      .diagram-frame { height: 820px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="panel hero">
+      <div class="eyebrow">Azure DevOps / CI/CD Architecture</div>
+      <h1>Mô hình CI/CD cho nhiều báo cáo HTML trên một domain</h1>
+      <p class="subtitle">
+        Mỗi báo cáo có slug riêng, nhiều version cố định, một alias <code>latest/</code> ổn định
+        để share và vận hành trên cùng một domain. Tài liệu này sắp xếp các giải pháp theo tiêu chí
+        từ dễ triển khai đến khó triển khai.
+      </p>
+      <div class="grid-4" style="margin-top:18px;">
+        <div class="card">
+          <h3>Mô hình URL</h3>
+          <p><code>/slug/v1/</code>, <code>/slug/v2/</code>, <code>/slug/latest/</code></p>
+        </div>
+        <div class="card">
+          <h3>Version</h3>
+          <p>Mỗi version là URL cố định, không bị ghi đè.</p>
+        </div>
+        <div class="card">
+          <h3>Latest</h3>
+          <p>Là version deploy production thành công gần nhất của từng report.</p>
+        </div>
+        <div class="card">
+          <h3>Notification</h3>
+          <p>Success hoặc failure đều có thể bắn notify về Microsoft Teams.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="grid-2">
+        <div>
+          <h2>Cấu trúc repository và URL</h2>
+          <pre><code>reports/
+  nua-dau-nam-t1-t5-2026/
+    v1/
+      index.html
+      assets/
+    v2/
+      index.html
+      assets/
+  chien-dich-he-2026/
+    v1/
+      index.html
+      assets/</code></pre>
+        </div>
+        <aside class="callout">
+          <h3>Ví dụ public URL</h3>
+          <ul class="list">
+            <li><code>/nua-dau-nam-t1-t5-2026/v1/</code></li>
+            <li><code>/nua-dau-nam-t1-t5-2026/v2/</code></li>
+            <li><code>/nua-dau-nam-t1-t5-2026/latest/</code></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>System Architecture Diagram</h2>
+      <iframe class="diagram-frame" src="./diagrams/system-overview.html" title="System Architecture Diagram tổng quan"></iframe>
+    </section>
+
+    <section class="panel">
+      <h2>Thứ tự khuyến nghị hiện tại</h2>
+      <div class="pill-row">
+        <div class="pill">1. Azure Storage Static Website/CDN</div>
+        <div class="pill">2. Cloudflare Pages</div>
+        <div class="pill">3. Vercel</div>
+        <div class="pill">4. Azure App Service</div>
+        <div class="pill">5. VM với Nginx</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="title-row">
+        <h2>Giải pháp 1: Azure Storage Static Website kèm tùy chọn CDN</h2>
+        <span class="badge">Dễ triển khai nhất</span>
+      </div>
+      <h3>Deployment Diagram</h3>
+      <iframe class="diagram-frame" src="./diagrams/deployment-storage.html" title="Deployment Diagram Azure Storage Static Website"></iframe>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card">
+          <h3>Checklist</h3>
+          <ul class="list">
+            <li>Tạo static website trên storage account.</li>
+            <li>Upload artifact đúng cây thư mục slug/version.</li>
+            <li>Copy hoặc sync version thành công sang <code>latest/</code>.</li>
+            <li>Purge CDN hoặc Front Door nếu có cache.</li>
+            <li>Smoke check cả URL version và URL <code>latest/</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="title-row">
+        <h2>Giải pháp 2: Cloudflare Pages</h2>
+        <span class="badge">Dễ triển khai</span>
+      </div>
+      <h3>Deployment Diagram</h3>
+      <iframe class="diagram-frame" src="./diagrams/deployment-cloudflare.html" title="Deployment Diagram Cloudflare Pages"></iframe>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card">
+          <h3>Checklist</h3>
+          <ul class="list">
+            <li>Tạo Pages project và chọn <code>Direct Upload</code>.</li>
+            <li>Chuẩn bị đầy đủ tree <code>dist/</code> theo slug/version/latest.</li>
+            <li>Cấu hình <code>CLOUDFLARE_API_TOKEN</code> và <code>CLOUDFLARE_ACCOUNT_ID</code>.</li>
+            <li>Deploy bằng <code>wrangler pages deploy</code>.</li>
+            <li>Smoke check URL version và URL <code>latest/</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="title-row">
+        <h2>Giải pháp 3: Vercel</h2>
+        <span class="badge">Trung bình dễ</span>
+      </div>
+      <h3>Deployment Diagram</h3>
+      <iframe class="diagram-frame" src="./diagrams/deployment-vercel.html" title="Deployment Diagram Vercel"></iframe>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card">
+          <h3>Checklist</h3>
+          <ul class="list">
+            <li>Tạo Vercel project cho domain hoặc subdomain tương ứng.</li>
+            <li>Chọn Git integration với Azure DevOps hoặc deploy bằng Vercel CLI.</li>
+            <li>Build output theo cấu trúc slug/version/latest trước khi deploy.</li>
+            <li>Cấu hình custom domain và rule route cho <code>latest/</code>.</li>
+            <li>Smoke check URL version và URL <code>latest/</code>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Ghi chú</h3>
+          <ul class="list">
+            <li>Phù hợp khi team quen hệ sinh thái frontend hosting của Vercel.</li>
+            <li>Có thể dùng Azure DevOps để điều phối release thay vì phụ thuộc hoàn toàn vào Git-based flow.</li>
+            <li>Notify success/failure vẫn có thể bắn về Microsoft Teams như các giải pháp còn lại.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="title-row">
+        <h2>Giải pháp 4: Azure App Service</h2>
+        <span class="badge">Trung bình</span>
+      </div>
+      <h3>Deployment Diagram</h3>
+      <iframe class="diagram-frame" src="./diagrams/deployment-appservice.html" title="Deployment Diagram Azure App Service"></iframe>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card">
+          <h3>Checklist</h3>
+          <ul class="list">
+            <li>Deploy artifact vào App Service đúng content root.</li>
+            <li>Giữ cây slug/version nhất quán với public URL.</li>
+            <li>Cấu hình alias hoặc rewrite cho <code>latest/</code>.</li>
+            <li>Kiểm tra route thực tế sau deploy.</li>
+            <li>Smoke check URL version và URL <code>latest/</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="title-row">
+        <h2>Giải pháp 5: VM với Nginx</h2>
+        <span class="badge">Khó triển khai nhất</span>
+      </div>
+      <h3>Deployment Diagram</h3>
+      <iframe class="diagram-frame" src="./diagrams/deployment-vm.html" title="Deployment Diagram VM với Nginx"></iframe>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card">
+          <h3>Checklist</h3>
+          <ul class="list">
+            <li>Chuẩn bị release tree trên VM.</li>
+            <li>Copy artifact lên server và extract đúng path.</li>
+            <li>Update symlink hoặc alias <code>latest</code>.</li>
+            <li>Reload Nginx nếu cần thay đổi route.</li>
+            <li>Smoke check URL version và URL <code>latest/</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Bảng so sánh</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tiêu chí</th>
+            <th>Azure Storage Static Website/CDN</th>
+            <th>Cloudflare Pages</th>
+            <th>Vercel</th>
+            <th>Azure App Service</th>
+            <th>VM với Nginx</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Phù hợp với <code>/&lt;report&gt;/&lt;version&gt;/</code></td>
+            <td>Rất tốt</td>
+            <td>Rất tốt</td>
+            <td>Rất tốt</td>
+            <td>Tốt</td>
+            <td>Rất tốt</td>
+          </tr>
+          <tr>
+            <td>Phù hợp với <code>latest/</code></td>
+            <td>Rất tốt</td>
+            <td>Rất tốt</td>
+            <td>Tốt đến rất tốt</td>
+            <td>Tốt</td>
+            <td>Rất tốt</td>
+          </tr>
+          <tr>
+            <td>Độ phức tạp setup</td>
+            <td>Thấp</td>
+            <td>Thấp</td>
+            <td>Thấp đến trung bình</td>
+            <td>Trung bình</td>
+            <td>Trung bình đến cao</td>
+          </tr>
+          <tr>
+            <td>Chi phí vận hành</td>
+            <td>Thấp</td>
+            <td>Thấp đến trung bình</td>
+            <td>Thấp đến trung bình</td>
+            <td>Trung bình</td>
+            <td>Trung bình đến cao</td>
+          </tr>
+          <tr>
+            <td>Độ dễ rollback</td>
+            <td>Cao</td>
+            <td>Cao</td>
+            <td>Trung bình đến cao</td>
+            <td>Trung bình đến cao</td>
+            <td>Cao</td>
+          </tr>
+          <tr>
+            <td>Khuyến nghị tổng thể</td>
+            <td>Giải pháp 1</td>
+            <td>Giải pháp 2</td>
+            <td>Giải pháp 3</td>
+            <td>Giải pháp 4</td>
+            <td>Giải pháp 5</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</body>
+</html>
