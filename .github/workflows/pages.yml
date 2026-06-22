@@ -29,8 +29,13 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir -p _site
-          cp index.html _site/index.html
-          cp -R report _site/report
+          rsync -av \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'docs/' \
+            --exclude '_site/' \
+            --exclude 'README.md' \
+            ./ _site/
           touch _site/.nojekyll
 
       - name: Setup Pages
