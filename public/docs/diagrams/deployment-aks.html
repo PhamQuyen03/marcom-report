@@ -496,12 +496,12 @@
         <div class="pulse-dot"></div>
         <h1>Deployment Diagram - AKS</h1>
       </div>
-      <p class="subtitle">Next.js app on AKS with Gateway API publish layer and Teams notification</p>
+      <p class="subtitle">Azure Front Door, Gateway API và Entra External ID cho web portal trên AKS</p>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container">
-      <svg viewBox="0 0 1740 680" role="img" aria-label="Deployment Diagram - AKS — Next.js app on AKS with Gateway API publish layer and Teams notification (architecture diagram)">
+      <svg viewBox="0 0 1860 780" role="img" aria-label="Deployment Diagram - AKS — Azure Front Door, Gateway API và Entra External ID cho web portal trên AKS (architecture diagram)">
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -525,93 +525,117 @@
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect x="296" y="276" width="1058" height="316" rx="12" class="c-region" stroke-width="1"/>
-        <text x="304" y="294" class="t-cloud" font-size="9" font-weight="600">AKS Delivery Path</text>
+        <rect x="16" y="6" width="1668" height="236" rx="12" class="c-region" stroke-width="1"/>
+        <text x="24" y="24" class="t-cloud" font-size="9" font-weight="600">Public Access Path</text>
 
-        <rect x="1366" y="196" width="318" height="196" rx="12" class="c-region" stroke-width="1"/>
-        <text x="1374" y="214" class="t-cloud" font-size="9" font-weight="600">Public Access</text>
-
-        <rect x="1386" y="476" width="218" height="116" rx="12" class="c-region" stroke-width="1"/>
-        <text x="1394" y="494" class="t-cloud" font-size="9" font-weight="600">Notification</text>
+        <rect x="16" y="476" width="1418" height="116" rx="12" class="c-region" stroke-width="1"/>
+        <text x="24" y="494" class="t-cloud" font-size="9" font-weight="600">CI/CD Delivery Path</text>
 
         <!-- Connection paths (before components for correct z-order) -->
-        <path d="M 250 336 L 320 336" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 540 336 L 610 336" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 810 336 L 890 336" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 1080 336 L 1150 336" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 1330 336 L 1352 336 Q 1360 336 1360 328 L 1360 264 Q 1360 256 1368 256 L 1390 256" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 1570 256 L 1570 256 L 1570 336 L 1570 336 L 1570 336" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 985 372 L 985 372 L 985 528 Q 985 536 993 536 L 1227 536 Q 1235 536 1235 528 L 1235 500" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 1320 536 L 1410 536" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path d="M 260 186 L 320 186" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 510 186 L 580 186" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 800 186 L 870 186" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 1080 186 L 1150 186" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 1260 150 L 1260 102" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path d="M 1370 186 L 1440 186" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 260 536 L 330 536" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 550 536 L 620 536" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 830 536 L 900 536" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 1120 536 L 1190 536" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 1300 500 L 1300 500 L 1300 368 Q 1300 360 1292 360 L 1268 360 Q 1260 360 1260 352 L 1260 222 L 1260 222" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
 
         <!-- Components -->
-        <rect x="40" y="300" width="210" height="72" rx="6" class="c-mask"/>
-        <rect x="40" y="300" width="210" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="145" y="334" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Repository</text>
-        <text x="145" y="350" class="t-muted" font-size="9" text-anchor="middle">Next.js + public/reports/&lt;slug&gt;.html</text>
+        <rect x="40" y="150" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="40" y="150" width="220" height="72" rx="6" class="c-external" stroke-width="1.5"/>
+        <text x="150" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Internal + External Users</text>
+        <text x="150" y="200" class="t-muted" font-size="9" text-anchor="middle">browser access</text>
 
-        <rect x="320" y="300" width="220" height="72" rx="6" class="c-mask"/>
-        <rect x="320" y="300" width="220" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-        <text x="430" y="334" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure DevOps</text>
-        <text x="430" y="350" class="t-muted" font-size="9" text-anchor="middle">lint + validate + build + deploy</text>
+        <rect x="320" y="150" width="190" height="72" rx="6" class="c-mask"/>
+        <rect x="320" y="150" width="190" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
+        <text x="415" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/reports/&lt;slug&gt;</text>
+        <text x="415" y="200" class="t-muted" font-size="9" text-anchor="middle">stable portal URL</text>
 
-        <rect x="610" y="300" width="200" height="72" rx="6" class="c-mask"/>
-        <rect x="610" y="300" width="200" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="710" y="334" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure Container Registry</text>
-        <text x="710" y="350" class="t-muted" font-size="9" text-anchor="middle">app image per build</text>
+        <rect x="580" y="150" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="580" y="150" width="220" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="690" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure Front Door Premium</text>
+        <text x="690" y="200" class="t-muted" font-size="9" text-anchor="middle">custom domain + WAF</text>
 
-        <rect x="890" y="300" width="190" height="72" rx="6" class="c-mask"/>
-        <rect x="890" y="300" width="190" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="985" y="334" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">AKS</text>
-        <text x="985" y="350" class="t-muted" font-size="9" text-anchor="middle">Next.js deployment + service</text>
+        <rect x="870" y="150" width="210" height="72" rx="6" class="c-mask"/>
+        <rect x="870" y="150" width="210" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="975" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Gateway API Layer</text>
+        <text x="975" y="200" class="t-muted" font-size="9" text-anchor="middle">AKS application routing</text>
 
-        <rect x="1150" y="300" width="180" height="72" rx="6" class="c-mask"/>
-        <rect x="1150" y="300" width="180" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="1240" y="334" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Gateway API Layer</text>
-        <text x="1240" y="350" class="t-muted" font-size="9" text-anchor="middle">approuting-istio</text>
+        <rect x="1150" y="150" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="1150" y="150" width="220" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="1260" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">AKS Next.js App</text>
+        <text x="1260" y="200" class="t-muted" font-size="9" text-anchor="middle">portal + auth + ACL</text>
 
-        <rect x="1390" y="220" width="180" height="72" rx="6" class="c-mask"/>
-        <rect x="1390" y="220" width="180" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
-        <text x="1480" y="254" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/reports/&lt;slug&gt;</text>
-        <text x="1480" y="270" class="t-muted" font-size="9" text-anchor="middle">stable endpoint</text>
+        <rect x="1150" y="30" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="1150" y="30" width="220" height="72" rx="6" class="c-security" stroke-width="1.5"/>
+        <text x="1260" y="64" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Entra External ID</text>
+        <text x="1260" y="80" class="t-muted" font-size="9" text-anchor="middle">OIDC / CIAM</text>
 
-        <rect x="1570" y="300" width="90" height="72" rx="6" class="c-mask"/>
-        <rect x="1570" y="300" width="90" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="1615" y="334" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Users</text>
-        <text x="1615" y="350" class="t-muted" font-size="9" text-anchor="middle">browser access</text>
+        <rect x="1440" y="150" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="1440" y="150" width="220" height="72" rx="6" class="c-database" stroke-width="1.5"/>
+        <text x="1550" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Authorization Store</text>
+        <text x="1550" y="200" class="t-muted" font-size="9" text-anchor="middle">report ACL + role mapping</text>
 
-        <rect x="1150" y="500" width="170" height="72" rx="6" class="c-mask"/>
-        <rect x="1150" y="500" width="170" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-        <text x="1235" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Deploy Result</text>
-        <text x="1235" y="550" class="t-muted" font-size="9" text-anchor="middle">success or failure</text>
+        <rect x="40" y="500" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="40" y="500" width="220" height="72" rx="6" class="c-external" stroke-width="1.5"/>
+        <text x="150" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Repository</text>
+        <text x="150" y="550" class="t-muted" font-size="9" text-anchor="middle">Next.js + public/reports/*.html</text>
 
-        <rect x="1410" y="500" width="170" height="72" rx="6" class="c-mask"/>
-        <rect x="1410" y="500" width="170" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="1495" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Teams</text>
-        <text x="1495" y="550" class="t-muted" font-size="9" text-anchor="middle">notify channel</text>
+        <rect x="330" y="500" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="330" y="500" width="220" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+        <text x="440" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure DevOps Pipeline</text>
+        <text x="440" y="550" class="t-muted" font-size="9" text-anchor="middle">validate + build + deploy</text>
+
+        <rect x="620" y="500" width="210" height="72" rx="6" class="c-mask"/>
+        <rect x="620" y="500" width="210" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="725" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Build Artifact</text>
+        <text x="725" y="550" class="t-muted" font-size="9" text-anchor="middle">immutable release package</text>
+
+        <rect x="900" y="500" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="900" y="500" width="220" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="1010" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure Container Registry</text>
+        <text x="1010" y="550" class="t-muted" font-size="9" text-anchor="middle">application image</text>
+
+        <rect x="1190" y="500" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="1190" y="500" width="220" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="1300" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">AKS Rollout</text>
+        <text x="1300" y="550" class="t-muted" font-size="9" text-anchor="middle">Deployment + Service update</text>
 
         <!-- Connection labels -->
-        <rect x="263.2" y="316" width="43.6" height="14" rx="3" class="c-mask"/>
-        <text x="285" y="326" class="t-backend" font-size="8" text-anchor="middle">trigger</text>
-
-        <rect x="821" y="316" width="58" height="14" rx="3" class="c-mask"/>
-        <text x="850" y="326" class="t-backend" font-size="8" text-anchor="middle">pull image</text>
 
 
 
 
+        <rect x="1204.6" y="130" width="110.8" height="14" rx="3" class="c-mask"/>
+        <text x="1260" y="140" class="t-security" font-size="8" text-anchor="middle">OIDC login / callback</text>
 
+        <rect x="273.2" y="516" width="43.6" height="14" rx="3" class="c-mask"/>
+        <text x="295" y="526" class="t-backend" font-size="8" text-anchor="middle">trigger</text>
+
+
+        <rect x="1128.4" y="516" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+        <text x="1155" y="526" class="t-backend" font-size="8" text-anchor="middle">image tag</text>
+        <rect x="1261.4" y="410" width="77.2" height="14" rx="3" class="c-mask"/>
+        <text x="1300" y="420" class="t-backend" font-size="8" text-anchor="middle">deploy release</text>
 
         <!-- Legend -->
-        <text x="40" y="651" class="t-primary" font-size="9" font-weight="600">Legend</text>
-        <rect x="40" y="656" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
-        <text x="60" y="664" class="t-muted" font-size="8">External</text>
-        <rect x="138" y="656" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-        <text x="158" y="664" class="t-muted" font-size="8">Backend</text>
-        <rect x="231" y="656" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
-        <text x="251" y="664" class="t-muted" font-size="8">Cloud</text>
-        <rect x="314" y="656" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
-        <text x="334" y="664" class="t-muted" font-size="8">Frontend</text>
+        <text x="40" y="751" class="t-primary" font-size="9" font-weight="600">Legend</text>
+        <rect x="40" y="756" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
+        <text x="60" y="764" class="t-muted" font-size="8">External</text>
+        <rect x="138" y="756" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
+        <text x="158" y="764" class="t-muted" font-size="8">Frontend</text>
+        <rect x="236" y="756" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
+        <text x="256" y="764" class="t-muted" font-size="8">Cloud</text>
+        <rect x="319" y="756" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
+        <text x="339" y="764" class="t-muted" font-size="8">Security</text>
+        <rect x="417" y="756" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
+        <text x="437" y="764" class="t-muted" font-size="8">Database</text>
+        <rect x="515" y="756" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
+        <text x="535" y="764" class="t-muted" font-size="8">Backend</text>
       </svg>
     </div>
 
@@ -620,24 +644,36 @@
       <div class="card">
         <div class="card-header">
           <div class="card-dot cyan"></div>
-          <h3>Khuyến nghị</h3>
+          <h3>Luồng public access</h3>
         </div>
         <ul>
-          <li>&bull; Phù hợp nhất với repo Next.js hiện tại</li>
-          <li>&bull; Dùng Gateway API layer với approuting-istio</li>
-          <li>&bull; Public route chỉ còn /reports/&lt;slug&gt;</li>
+          <li>&bull; Front Door là public entry của web portal</li>
+          <li>&bull; Gateway API publish traffic vào app trên AKS</li>
+          <li>&bull; Next.js app tự tích hợp Microsoft Entra External ID</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Rollback</h3>
+          <div class="card-dot emerald"></div>
+          <h3>Luồng authorization</h3>
         </div>
         <ul>
-          <li>&bull; Rollback deployment</li>
-          <li>&bull; Hoặc redeploy image tag cũ</li>
-          <li>&bull; Success và failure đều gửi Teams</li>
+          <li>&bull; App tự quản lý login, callback và session web</li>
+          <li>&bull; Quyền truy cập được kiểm tra theo path và slug</li>
+          <li>&bull; Authorization store giữ ACL cho internal và external users</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>Luồng CI/CD</h3>
+        </div>
+        <ul>
+          <li>&bull; Azure DevOps build một artifact và một image rõ ràng</li>
+          <li>&bull; ACR lưu image để rollout vào AKS</li>
+          <li>&bull; Public endpoint của report giữ ổn định theo /reports/&lt;slug&gt;</li>
         </ul>
       </div>
     </div>

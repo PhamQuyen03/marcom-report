@@ -6,7 +6,7 @@
   <title>AKS + Next.js - Only Slug</title>
   <style>
     body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #eef3f7; color: #18222d; line-height: 1.6; }
-    .page { width: min(1120px, calc(100% - 28px)); margin: 24px auto 40px; }
+    .page { width: min(1180px, calc(100% - 28px)); margin: 24px auto 40px; }
     .panel { background: #f9fbfd; border: 1px solid #d5e0ea; border-radius: 22px; padding: 24px; margin-bottom: 18px; box-shadow: 0 18px 48px rgba(28, 53, 78, 0.08); }
     h1, h2, h3 { margin: 0 0 12px; }
     .grid-2, .grid-3 { display: grid; gap: 16px; }
@@ -14,7 +14,7 @@
     .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .card { background: #fff; border: 1px solid #d5e0ea; border-radius: 18px; padding: 18px; }
     code, pre { font-family: Consolas, monospace; }
-    code { background: rgba(15,91,141,.08); padding: 2px 6px; border-radius: 8px; }
+    code { background: rgba(15, 91, 141, 0.08); padding: 2px 6px; border-radius: 8px; }
     pre { margin: 0; padding: 16px 18px; background: #15202b; color: #edf4fb; border-radius: 18px; overflow: auto; }
     ul, ol { margin: 0; padding-left: 20px; }
     li + li { margin-top: 8px; }
@@ -38,11 +38,11 @@
         </div>
         <div class="card">
           <h3>Platform công ty</h3>
-          <p>Đã có AKS, ACR, lớp publish traffic của cluster và team DevOps vận hành.</p>
+          <p>Đã có AKS, ACR, Azure DevOps và team DevOps vận hành.</p>
         </div>
         <div class="card">
-          <h3>CI/CD</h3>
-          <p>Có thể bám theo chuẩn release enterprise chung của công ty.</p>
+          <h3>Một web portal duy nhất</h3>
+          <p>App tự tích hợp <code>Microsoft Entra External ID</code> cho cả internal và external users.</p>
         </div>
       </div>
     </section>
@@ -68,15 +68,17 @@
     <section class="panel">
       <h2>Kiến trúc tổng quát</h2>
       <pre><code>Azure Repos / Git
-  -> Azure DevOps Pipeline
-  -> Build Next.js image
-  -> Push ACR
-  -> Deploy AKS
-  -> Service
-  -> Ingress layer
-  -> Public domain
-  -> Smoke check
-  -> Notify Microsoft Teams</code></pre>
+  -&gt; Azure DevOps Pipeline
+  -&gt; Build Next.js image
+  -&gt; Push ACR
+  -&gt; Deploy AKS
+  -&gt; Gateway API publish layer
+  -&gt; Next.js web portal
+  -&gt; Microsoft Entra External ID login
+  -&gt; Authorization theo path / slug
+  -&gt; Public domain
+  -&gt; Smoke check
+  -&gt; Notify Microsoft Teams</code></pre>
     </section>
 
     <section class="panel">
@@ -85,41 +87,54 @@
         <div class="card">
           <h3>Repository</h3>
           <ul>
-            <li>source Next.js</li>
-            <li><code>public/reports/*.html</code></li>
-            <li><code>Dockerfile.aks</code></li>
-            <li>manifest hoặc chart cho AKS</li>
-            <li>pipeline Azure DevOps</li>
+            <li>Source Next.js.</li>
+            <li><code>public/reports/*.html</code>.</li>
+            <li><code>Dockerfile.aks</code>.</li>
+            <li>Manifest hoặc chart cho AKS.</li>
+            <li>Pipeline Azure DevOps.</li>
           </ul>
         </div>
         <div class="card">
           <h3>Azure DevOps</h3>
           <ul>
-            <li><code>pnpm install</code></li>
-            <li><code>lint</code></li>
-            <li>validate report slug</li>
-            <li>build app</li>
-            <li>build/push image</li>
-            <li>deploy AKS</li>
-            <li>smoke check và Teams notify</li>
+            <li><code>pnpm install</code>.</li>
+            <li><code>lint</code>.</li>
+            <li>Validate report slug.</li>
+            <li>Build app, build image, push ACR.</li>
+            <li>Deploy AKS, smoke check và notify Teams.</li>
           </ul>
         </div>
       </div>
       <div class="card" style="margin-top: 16px;">
-        <h3>Ingress layer</h3>
-        <p>Lớp này phụ trách expose domain, route request vào app <code>Next.js</code> và terminate TLS.</p>
-        <p>Trong hướng này, lựa chọn được chốt là <code>AKS application routing Gateway API implementation</code> với <code>gatewayClassName: approuting-istio</code>.</p>
+        <h3>Public entry và publish layer</h3>
+        <p>Lớp này phụ trách nhận request từ domain, áp WAF và route request vào app thông qua publish layer của AKS.</p>
+        <p>Thành phần được chốt là <code>Azure Front Door Premium</code> ở lớp public entry và <code>AKS application routing Gateway API implementation</code> với <code>gatewayClassName: approuting-istio</code> làm publish layer trong cluster.</p>
       </div>
     </section>
 
     <section class="panel">
-      <h2>Ingress layer khuyến nghị</h2>
+      <h2>Thứ tự truy cập khuyến nghị</h2>
       <ul>
-        <li>Dùng <code>AKS application routing Gateway API implementation</code>.</li>
-        <li>Dùng <code>gatewayClassName: approuting-istio</code>.</li>
-        <li>Dùng <code>Gateway</code> + <code>HTTPRoute</code> cho publish traffic.</li>
+        <li><code>Internal Users / External Users -&gt; Azure Front Door Premium</code>.</li>
+        <li><code>Azure Front Door Premium -&gt; Gateway API</code>.</li>
+        <li><code>Gateway API -&gt; AKS Next.js App</code>.</li>
+        <li><code>AKS Next.js App -&gt; Microsoft Entra External ID</code> cho OIDC login và callback.</li>
       </ul>
-      <p style="margin-top: 12px;">Khi nói <code>Ingress layer</code> trong tài liệu này thì nên hiểu là lớp <code>Gateway API</code> của AKS application routing.</p>
+      <p style="margin-top: 12px;">Khi nói <code>Ingress layer</code> trong tài liệu này thì nên hiểu là <code>Azure Front Door Premium</code> ở bên ngoài và <code>Gateway API</code> ở trong cluster. Phần login và authorization nằm trong app.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Identity và authorization model</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Identity</h3>
+          <p><code>Microsoft Entra External ID</code> là identity provider cho portal. Internal user và external user cùng đi qua flow mà app cấu hình với External ID.</p>
+        </div>
+        <div class="card">
+          <h3>Authorization</h3>
+          <p>App kiểm tra quyền theo path và slug, dùng role mapping hoặc ACL trong database / metadata store.</p>
+        </div>
+      </div>
     </section>
 
     <section class="panel">
@@ -131,7 +146,7 @@
         </div>
         <div class="card">
           <h3>Hướng 2: certificate nội bộ</h3>
-          <p>Certificate được lưu vào <code>Kubernetes Secret</code> và ingress layer dùng để terminate TLS.</p>
+          <p>Certificate được lưu vào <code>Kubernetes Secret</code> và Gateway hoặc lớp publish dùng để terminate TLS.</p>
         </div>
       </div>
     </section>
@@ -163,8 +178,8 @@
       <h2>Lưu ý build</h2>
       <p>Để CI/CD production ổn định, current setup dùng:</p>
       <ul>
-        <li><code>next dev --turbopack</code> cho local dev</li>
-        <li><code>next build --webpack</code> cho production build</li>
+        <li><code>next dev --turbopack</code> cho local dev.</li>
+        <li><code>next build --webpack</code> cho production build.</li>
       </ul>
     </section>
   </main>

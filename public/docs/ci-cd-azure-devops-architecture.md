@@ -6,12 +6,12 @@ Tài liệu này mô tả kiến trúc CI/CD dùng Azure DevOps để publish re
 
 Mô hình vận hành đã chốt:
 
-- mỗi report có một `slug` public duy nhất
-- public endpoint ổn định theo dạng `https://domain/reports/<slug>`
-- không dùng `version path`
-- không dùng alias `latest`
-- rollback bằng cách redeploy artifact cũ của chính slug đó
-- success hoặc failure đều bắn notify về `Microsoft Teams`
+- Mỗi report có một `slug` public duy nhất.
+- Public endpoint ổn định theo dạng `https://domain/reports/<slug>`.
+- Không dùng `version path`.
+- Không dùng alias `latest`.
+- Rollback bằng cách redeploy artifact cũ của chính slug đó.
+- Success hoặc failure đều bắn notify về `Microsoft Teams`.
 
 ## Quy ước repository và URL
 
@@ -39,9 +39,9 @@ public/
 
 Khi đó:
 
-- file nguồn vẫn là `.html`
-- public route là `/reports/<slug>`
-- app hoặc hosting layer sẽ map slug sang file HTML tương ứng
+- File nguồn vẫn là `.html`.
+- Public route là `/reports/<slug>`.
+- App hoặc hosting layer sẽ map slug sang file HTML tương ứng.
 
 ## Nguyên tắc CI/CD chung
 
@@ -66,126 +66,91 @@ Khi đó:
 
 ## System Architecture Diagram
 
-Sơ đồ tổng quan đã được cập nhật theo mô hình slug-only:
+Sơ đồ tổng quan đi theo mô hình web portal trên AKS:
 
-- một artifact cho mỗi slug
-- một endpoint public ổn định cho mỗi slug
-- không còn `version/latest`
-- notify Teams sau deploy
+- `Internal Users` và `External Users` cùng truy cập một portal.
+- `Azure Front Door Premium` là public entry.
+- `Gateway API` publish traffic vào app trong AKS.
+- `Next.js app` tích hợp trực tiếp `Microsoft Entra External ID`.
+- Phân quyền theo path và slug được xử lý trong app.
 
 ## Các giải pháp
 
-### Giải pháp 1: AKS
+### Giải pháp: AKS
 
 Đây là giải pháp phù hợp nhất với yêu cầu hiện tại nếu:
 
-- repo chính vẫn là app `Next.js`
-- công ty đã có platform Kubernetes
-- team DevOps đã vận hành `AKS`, `ACR` và lớp publish traffic của cluster
+- Repo chính vẫn là app `Next.js`.
+- Công ty đã có platform Kubernetes.
+- Team DevOps đã vận hành `AKS`, `ACR` và lớp publish traffic của cluster.
+- Portal cần phục vụ cả internal và external users.
+
+Kiến trúc public access nên chốt theo thứ tự:
+
+- `Internal Users` hoặc `External Users`
+- `Azure Front Door Premium`
+- `Gateway API`
+- `AKS Next.js App`
+- `Microsoft Entra External ID` dùng cho OIDC login trong app
 
 Checklist:
 
-- build image `Next.js`
-- push lên `ACR`
-- deploy lên `AKS`
-- expose qua `Gateway API` publish layer
-- smoke check `/reports/<slug>`
-- notify Teams
+- Build image `Next.js`.
+- Push image lên `ACR`.
+- Deploy lên `AKS`.
+- Expose public domain qua `Azure Front Door Premium`.
+- Publish traffic vào app qua `Gateway API` layer.
+- Tích hợp `Microsoft Entra External ID` trực tiếp trong app.
+- Kiểm tra quyền theo path và slug ở tầng app.
+- Smoke check `/reports/<slug>`.
+- Notify Teams.
 
 Rollback:
 
-- rollback deployment
-- hoặc redeploy image tag cũ
+- Rollback deployment.
+- Hoặc redeploy image tag cũ.
 
 ### Giải pháp 2: Cloudflare Pages
 
 Phù hợp khi:
 
-- muốn edge hosting global
-- muốn deploy nhanh từ Azure DevOps
-- không cần giữ toàn bộ app `Next.js` như production stack chính
-
-Checklist:
-
-- build publish tree
-- deploy bằng `wrangler pages deploy`
-- cấu hình domain
-- smoke check `/reports/<slug>`
-- notify Teams
-
-Rollback:
-
-- republish artifact slug trước đó
+- Muốn edge hosting global.
+- Muốn deploy nhanh từ Azure DevOps.
+- Không cần giữ toàn bộ app `Next.js` như production stack chính.
 
 ### Giải pháp 3: Vercel
 
 Phù hợp khi:
 
-- team quen hệ sinh thái Vercel
-- muốn managed frontend hosting
-- route public chỉ cần ổn định theo slug
-
-Checklist:
-
-- build output đúng rule slug
-- deploy qua Git integration hoặc CLI
-- cấu hình domain
-- smoke check
-- notify Teams
-
-Rollback:
-
-- redeploy build trước đó
+- Team quen hệ sinh thái Vercel.
+- Muốn managed frontend hosting.
+- Muốn public route ổn định theo slug.
 
 ### Giải pháp 4: VM với Nginx
 
 Phù hợp khi:
 
-- muốn toàn quyền với routing và file system
-- muốn chi phí hạ tầng thuần thấp
+- Muốn toàn quyền với routing và file system.
+- Muốn chi phí hạ tầng thuần thấp.
 
-Checklist:
+### Giải pháp 5: Azure App Service
 
-- copy artifact lên VM
-- rewrite `/reports/<slug>` sang file HTML tương ứng
-- smoke check
-- notify Teams
+Phù hợp khi:
 
-Rollback:
-
-- restore file slug trước đó
+- Muốn PaaS trong Azure.
+- Không muốn vận hành Kubernetes nhưng vẫn cần app service chuẩn enterprise.
 
 ## Khuyến nghị thực tế hiện tại
 
 Với bối cảnh hiện tại:
 
-- repo chính là app `Next.js`
-- public route đã chốt theo `only slug`
-- công ty đã có sẵn platform Kubernetes
-- team DevOps đã vận hành AKS
+- Repo chính là app `Next.js`.
+- Public route đã chốt theo `only slug`.
+- Công ty đã có sẵn platform Kubernetes.
+- Team DevOps đã vận hành AKS.
+- Portal cần phục vụ cả internal và external users.
 
-thì hướng nên chốt để đồng bộ nhất là:
+Hướng nên chốt để đồng bộ nhất là:
 
 1. `AKS`
-2. các giải pháp còn lại chỉ là phương án thay thế theo governance hoặc mục đích riêng
-
-## Bảng so sánh nhanh
-
-| Tiêu chí | AKS | Cloudflare Pages | Vercel | App Service | VM + Nginx |
-| --- | --- | --- | --- | --- | --- |
-| Route slug ổn định | Rất tốt | Rất tốt | Rất tốt | Tốt | Rất tốt |
-| Phù hợp repo Next.js hiện tại | Rất tốt | Trung bình | Trung bình | Tốt | Trung bình |
-| Độ đồng bộ với platform công ty | Rất tốt | Trung bình | Trung bình | Tốt | Trung bình |
-| Rollback | Cao | Cao | Cao | Cao | Cao |
-| Độ dễ setup riêng lẻ | Cao | Thấp đến trung bình | Trung bình | Trung bình | Trung bình |
-
-## Kết luận
-
-Mô hình `only slug` giúp tài liệu, routing, rollout và vận hành đơn giản hơn rất nhiều:
-
-- người dùng chỉ nhớ một URL ổn định
-- pipeline chỉ cần quan tâm slug nào được deploy
-- rollback rõ ràng theo artifact của slug
-- không còn logic `version/latest` gây rối
-
-Với yêu cầu hiện tại, `AKS` nên là giải pháp số 1 trong tài liệu tổng quan để đồng bộ với toàn bộ hệ thống đang có.
+2. Các giải pháp còn lại chỉ là phương án thay thế theo governance, chi phí hoặc mục đích riêng.

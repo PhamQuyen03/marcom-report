@@ -34,10 +34,6 @@
     code, pre { font-family: Consolas, monospace; }
     code { background: rgba(164, 77, 48, 0.08); padding: 2px 6px; border-radius: 8px; }
     pre { margin: 0; padding: 16px 18px; background: #201814; color: #f7efe6; border-radius: 18px; overflow: auto; }
-    table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
-    th, td { padding: 14px 16px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-    th { background: #f5ece3; }
-    tr:last-child td { border-bottom: 0; }
     @media (max-width: 980px) { .diagram-frame { height: 820px; } .page { width: calc(100% - 16px); } }
   </style>
 </head>
@@ -48,12 +44,12 @@
       <h1>Mô hình only slug cho report HTML</h1>
       <p class="subtitle">
         Public endpoint của mỗi report chỉ còn một slug ổn định theo dạng <code>/reports/&lt;slug&gt;</code>.
-        Không còn <code>version path</code> và không còn <code>latest</code>. Rollback được xử lý bằng artifact cũ của chính slug đó.
+        Không dùng <code>version path</code> và không dùng <code>latest</code>. Rollback được xử lý bằng artifact cũ của chính slug đó.
       </p>
       <div class="hero-stats">
         <div class="card"><h3>Public URL</h3><p><code>/reports/&lt;slug&gt;</code></p></div>
         <div class="card"><h3>Artifact</h3><p>Một artifact rõ ràng cho mỗi slug.</p></div>
-        <div class="card"><h3>Rollback</h3><p>Redeploy artifact cũ của cùng slug.</p></div>
+        <div class="card"><h3>Rollback</h3><p>Redeploy artifact hoặc image cũ của cùng slug.</p></div>
         <div class="card"><h3>Notify</h3><p>Success và failure đều gửi Teams.</p></div>
       </div>
     </section>
@@ -81,7 +77,6 @@ public/reports/bao-cao-ai-2026.html</code></pre>
         <li>Không build lại trong production stage.</li>
         <li>Validate sớm file slug, route public và smoke check.</li>
         <li>Rollback bằng artifact cũ của chính slug đó.</li>
-        <li>Success hoặc failure đều notify về Microsoft Teams.</li>
       </ul>
     </section>
 
@@ -93,22 +88,28 @@ public/reports/bao-cao-ai-2026.html</code></pre>
         <li>Build artifact hoặc build image.</li>
         <li>Deploy lên môi trường mục tiêu.</li>
         <li>Smoke check <code>/reports/&lt;slug&gt;</code>.</li>
-        <li>Notify Microsoft Teams.</li>
         <li>Nếu cần rollback thì redeploy artifact cũ của slug đó.</li>
       </ol>
     </section>
 
     <section class="panel">
-      <h2>Giải pháp 1: AKS</h2>
-      <p>Đây là giải pháp phù hợp nhất với yêu cầu hiện tại khi repo chính vẫn là app <code>Next.js</code> và công ty đã có sẵn platform Kubernetes, ACR, Azure DevOps và team DevOps vận hành.</p>
+      <h2>Giải pháp: AKS</h2>
+      <p>Đây là giải pháp phù hợp nhất với yêu cầu hiện tại khi repo chính vẫn là app <code>Next.js</code>, công ty đã có platform Kubernetes, ACR, Azure DevOps, team DevOps vận hành và portal cần phục vụ cả internal lẫn external users.</p>
       <iframe class="diagram-frame" src="./diagrams/deployment-aks.html" title="AKS Diagram"></iframe>
+      <div class="card" style="margin-top: 16px;">
+        <h3>Public access chuẩn</h3>
+        <p><code>Internal Users / External Users -&gt; Azure Front Door Premium -&gt; Gateway API -&gt; AKS Next.js App -&gt; Microsoft Entra External ID</code></p>
+      </div>
       <div class="card" style="margin-top: 16px;">
         <h3>Checklist</h3>
         <ul>
           <li>Build image <code>Next.js</code>.</li>
           <li>Push image lên <code>ACR</code>.</li>
           <li>Deploy lên <code>AKS</code>.</li>
-          <li>Expose qua <code>Gateway API</code> publish layer.</li>
+          <li>Expose public domain qua <code>Azure Front Door Premium</code>.</li>
+          <li>Publish traffic vào app qua <code>Gateway API</code> layer.</li>
+          <li>Tích hợp <code>Microsoft Entra External ID</code> trực tiếp trong app.</li>
+          <li>Kiểm tra quyền theo path và slug ở tầng app.</li>
           <li>Smoke check <code>/reports/&lt;slug&gt;</code>.</li>
           <li>Notify Teams.</li>
         </ul>
@@ -116,42 +117,8 @@ public/reports/bao-cao-ai-2026.html</code></pre>
     </section>
 
     <section class="panel">
-      <h2>Giải pháp 2: Cloudflare Pages</h2>
-      <p>Phù hợp khi muốn edge hosting global và deploy nhanh từ Azure DevOps, nhưng không phải lựa chọn đồng bộ nhất với production stack hiện tại.</p>
-      <iframe class="diagram-frame" src="./diagrams/deployment-cloudflare.html" title="Cloudflare Diagram"></iframe>
-    </section>
-
-    <section class="panel">
-      <h2>Giải pháp 3: Vercel</h2>
-      <p>Phù hợp khi team quen hệ sinh thái Vercel và cần managed frontend hosting với public route theo slug.</p>
-      <iframe class="diagram-frame" src="./diagrams/deployment-vercel.html" title="Vercel Diagram"></iframe>
-    </section>
-
-    <section class="panel">
-      <h2>Giải pháp 4: VM với Nginx</h2>
-      <p>Phù hợp khi muốn toàn quyền với routing và file system, nhưng ít đồng bộ hơn với production stack hiện tại.</p>
-      <iframe class="diagram-frame" src="./diagrams/deployment-vm.html" title="VM Diagram"></iframe>
-    </section>
-
-    <section class="panel">
       <h2>Khuyến nghị thực tế hiện tại</h2>
       <p>Với bối cảnh hiện tại, hướng nên chốt để đồng bộ nhất là <code>AKS</code>. Các giải pháp còn lại nên coi là phương án thay thế theo governance, chi phí hoặc mục đích riêng.</p>
-    </section>
-
-    <section class="panel">
-      <h2>Bảng so sánh nhanh</h2>
-      <table>
-        <thead>
-          <tr><th>Tiêu chí</th><th>AKS</th><th>Cloudflare Pages</th><th>Vercel</th><th>App Service</th><th>VM + Nginx</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Route slug ổn định</td><td>Rất tốt</td><td>Rất tốt</td><td>Rất tốt</td><td>Tốt</td><td>Rất tốt</td></tr>
-          <tr><td>Phù hợp repo Next.js hiện tại</td><td>Rất tốt</td><td>Trung bình</td><td>Trung bình</td><td>Tốt</td><td>Trung bình</td></tr>
-          <tr><td>Độ đồng bộ với platform công ty</td><td>Rất tốt</td><td>Trung bình</td><td>Trung bình</td><td>Tốt</td><td>Trung bình</td></tr>
-          <tr><td>Rollback</td><td>Cao</td><td>Cao</td><td>Cao</td><td>Cao</td><td>Cao</td></tr>
-          <tr><td>Độ dễ setup riêng lẻ</td><td>Cao</td><td>Thấp đến trung bình</td><td>Trung bình</td><td>Trung bình</td><td>Trung bình</td></tr>
-        </tbody>
-      </table>
     </section>
   </main>
 </body>
