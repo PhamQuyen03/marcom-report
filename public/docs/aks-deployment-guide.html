@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Giải pháp AKS: Azure DevOps CI/CD cho report HTML</title>
+  <style>
+    :root {
+      --bg: #eef3f7;
+      --panel: #f9fbfd;
+      --card: #ffffff;
+      --text: #18222d;
+      --muted: #5d6b79;
+      --line: #d5e0ea;
+      --accent: #0f5b8d;
+      --accent-soft: #dcecf7;
+      --green-soft: #e5f4ed;
+      --green: #1f6a46;
+      --amber-soft: #f8eed8;
+      --amber: #8a641c;
+      --shadow: 0 18px 48px rgba(28, 53, 78, 0.08);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(15, 91, 141, 0.10), transparent 30%),
+        linear-gradient(180deg, #f5f9fc 0%, #edf3f7 100%);
+      line-height: 1.6;
+    }
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 24px auto 40px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(89, 116, 143, 0.16);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(15, 91, 141, 0.08), rgba(255, 255, 255, 0.96)),
+        var(--card);
+    }
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    h1, h2, h3 { margin: 0 0 12px; line-height: 1.2; }
+    h1 { font-size: clamp(34px, 5vw, 52px); }
+    h2 { font-size: 26px; }
+    h3 { font-size: 18px; }
+    p { margin: 0 0 12px; }
+    .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 960px;
+    }
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      gap: 16px;
+    }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .pill {
+      border: 1px solid rgba(15, 91, 141, 0.18);
+      background: rgba(15, 91, 141, 0.08);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .callout {
+      border-radius: 18px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      margin-top: 14px;
+    }
+    .callout.success {
+      background: var(--green-soft);
+      color: var(--green);
+      border-color: rgba(31, 106, 70, 0.18);
+    }
+    .callout.warning {
+      background: var(--amber-soft);
+      color: var(--amber);
+      border-color: rgba(138, 100, 28, 0.18);
+    }
+    ul { margin: 0; padding-left: 20px; }
+    li + li { margin-top: 8px; }
+    code {
+      font-family: Consolas, "SFMono-Regular", monospace;
+      background: rgba(15, 91, 141, 0.08);
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 0.95em;
+    }
+    pre {
+      margin: 0;
+      padding: 16px 18px;
+      background: #15202b;
+      color: #edf4fb;
+      border-radius: 18px;
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border-radius: 0;
+    }
+    .footer-note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (max-width: 980px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .page { width: min(100% - 20px, 1180px); margin: 12px auto 28px; }
+      .panel { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="panel hero">
+      <div class="eyebrow">Giải pháp AKS / Azure DevOps</div>
+      <h1>CI/CD report HTML trên AKS</h1>
+      <p class="subtitle">
+        Hướng này phù hợp khi công ty đã có sẵn platform Kubernetes, team DevOps vận hành,
+        ACR, Ingress và quy trình release chuẩn qua Azure DevOps.
+      </p>
+      <div class="grid-4" style="margin-top: 18px;">
+        <article class="card">
+          <h3>Chuẩn enterprise</h3>
+          <p>Release đi theo image tag, Ingress, TLS và rollout chuẩn Kubernetes.</p>
+        </article>
+        <article class="card">
+          <h3>Rollback</h3>
+          <p>Dễ rollback bằng image tag hoặc rollout undo.</p>
+        </article>
+        <article class="card">
+          <h3>SSL</h3>
+          <p>Thường xử lý qua Ingress, cert-manager hoặc secret nội bộ.</p>
+        </article>
+        <article class="card">
+          <h3>Đánh đổi</h3>
+          <p>Phức tạp hơn VM nếu chỉ xét riêng bài toán static HTML.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Khi nào nên chọn</h2>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Nên chọn khi</h3>
+          <ul>
+            <li>Công ty đã có sẵn platform Kubernetes.</li>
+            <li>Đã có ACR, Ingress, cert-manager, logging và monitoring.</li>
+            <li>Team DevOps quen vận hành workload trên AKS.</li>
+            <li>Muốn đưa bài toán report HTML vào cùng chuẩn platform với service khác.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Không nên chọn khi</h3>
+          <ul>
+            <li>Chỉ cần publish static HTML đơn giản.</li>
+            <li>Chưa có cluster và chưa có team vận hành.</li>
+            <li>Ưu tiên chi phí thấp và độ đơn giản tuyệt đối.</li>
+          </ul>
+        </article>
+      </div>
+      <div class="callout success">
+        <strong>Kết luận ngắn:</strong> nếu platform Kubernetes và team DevOps đã có sẵn,
+        AKS là một hướng hợp lý và chuẩn enterprise cho CI/CD của report HTML.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Hai mô hình triển khai phù hợp</h2>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Mô hình A: đóng report vào image Nginx</h3>
+          <ul>
+            <li>Azure DevOps gom report vào image <code>nginx</code>.</li>
+            <li>Build image.</li>
+            <li>Push lên <code>ACR</code>.</li>
+            <li>Deploy lên <code>AKS</code>.</li>
+          </ul>
+          <p style="margin-top: 12px;">Ưu điểm: rollback tốt, audit rõ, dễ kiểm soát.</p>
+          <p>Nhược điểm: đổi 1 file HTML cũng phải build image mới.</p>
+        </article>
+        <article class="card">
+          <h3>Mô hình B: HTML nằm ngoài image</h3>
+          <ul>
+            <li>Report được copy lên <code>Azure Files</code> hoặc <code>Blob</code>.</li>
+            <li>Pod Nginx mount storage vào web root.</li>
+            <li>Ingress publish ra domain.</li>
+          </ul>
+          <p style="margin-top: 12px;">Ưu điểm: update nội dung nhanh, không cần build image mỗi lần.</p>
+          <p>Nhược điểm: phức tạp hơn về storage và permission.</p>
+        </article>
+      </div>
+      <div class="callout warning">
+        <strong>Khuyến nghị:</strong> nếu mới bắt đầu với AKS cho use case này, nên đi từ mô hình A trước.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Mô hình URL public</h2>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Mô hình versioned</h3>
+          <pre><code>/nua-dau-nam-t1-t5-2026/v1/
+/nua-dau-nam-t1-t5-2026/v2/
+/nua-dau-nam-t1-t5-2026/latest/</code></pre>
+        </article>
+        <article class="card">
+          <h3>Mô hình file HTML trực tiếp</h3>
+          <pre><code>/report/bao-cao-doanh-thu-q2.html
+/report/chien-dich-mua-he-2026.html</code></pre>
+        </article>
+      </div>
+      <div class="callout success">
+        <strong>Lưu ý:</strong> <code>latest</code> nên là output của pipeline, không nên là logic động trong runtime.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Kiến trúc tổng quát</h2>
+      <pre><code>Azure Repos / Git
+  -> Azure DevOps Pipeline
+  -> Build artifact
+  -> Build image và push ACR
+  -> AKS Deployment
+  -> Service
+  -> Ingress
+  -> Domain public
+  -> Smoke check
+  -> Notify Microsoft Teams</code></pre>
+    </section>
+
+    <section class="panel">
+      <h2>Thành phần hạ tầng chính</h2>
+      <div class="grid-3">
+        <article class="card">
+          <h3>Source repository</h3>
+          <ul>
+            <li>folder report</li>
+            <li>file HTML public</li>
+            <li>Dockerfile</li>
+            <li>Helm chart hoặc manifest</li>
+            <li>pipeline Azure DevOps</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Azure DevOps và ACR</h3>
+          <ul>
+            <li>build CI</li>
+            <li>build image</li>
+            <li>push ACR</li>
+            <li>deploy AKS</li>
+            <li>smoke check và Teams notify</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>AKS và Ingress</h3>
+          <ul>
+            <li>Deployment</li>
+            <li>Service</li>
+            <li>Ingress</li>
+            <li>TLS termination</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>SSL trên AKS</h2>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Hướng 1: cert-manager</h3>
+          <ul>
+            <li>Tự động cấp và renew.</li>
+            <li>Chuẩn Kubernetes.</li>
+            <li>Phù hợp khi dùng <code>Let's Encrypt</code>.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Hướng 2: certificate nội bộ</h3>
+          <ul>
+            <li>Phù hợp policy doanh nghiệp.</li>
+            <li>Certificate được đưa vào <code>Kubernetes Secret</code>.</li>
+            <li>Ingress dùng secret để terminate TLS.</li>
+          </ul>
+        </article>
+      </div>
+      <div class="callout warning">
+        <strong>Khác với VM:</strong> trên AKS thường không SSH vào node để chạy <code>certbot</code>.
+        SSL được xử lý ở layer Ingress hoặc secret Kubernetes.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Dockerfile và Nginx config</h2>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Dockerfile mẫu</h3>
+          <pre><code>FROM nginx:alpine
+
+COPY publish/ /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf</code></pre>
+        </article>
+        <article class="card">
+          <h3>Nginx config mẫu</h3>
+          <pre><code>server {
+    listen 80;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ $uri/index.html =404;
+    }
+}</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Kubernetes manifest tối giản</h2>
+      <div class="grid-3">
+        <article class="card">
+          <h3>Deployment</h3>
+          <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: marcom-report
+spec:
+  replicas: 2</code></pre>
+        </article>
+        <article class="card">
+          <h3>Service</h3>
+          <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: marcom-report
+spec:
+  ports:
+    - port: 80</code></pre>
+        </article>
+        <article class="card">
+          <h3>Ingress</h3>
+          <pre><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: marcom-report
+spec:
+  tls:
+    - secretName: reports-tls</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Flow pipeline chuẩn</h2>
+      <ol>
+        <li>checkout code</li>
+        <li>validate cấu trúc report</li>
+        <li>build publish tree</li>
+        <li>build image và push ACR nếu dùng mô hình A</li>
+        <li>deploy AKS bằng <code>kubectl apply</code> hoặc <code>helm upgrade</code></li>
+        <li>đợi rollout thành công</li>
+        <li>smoke check URL public</li>
+        <li>gửi notify Microsoft Teams</li>
+      </ol>
+    </section>
+
+    <section class="panel">
+      <h2>Smoke check và rollback</h2>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Smoke check</h3>
+          <pre><code>curl -I https://reports.example.com/nua-dau-nam-t1-t5-2026/v2/
+curl -I https://reports.example.com/nua-dau-nam-t1-t5-2026/latest/
+curl -I https://reports.example.com/report/bao-cao-doanh-thu-q2.html</code></pre>
+        </article>
+        <article class="card">
+          <h3>Rollback mô hình A</h3>
+          <pre><code>kubectl rollout undo deployment/marcom-report -n marcom</code></pre>
+          <p style="margin-top: 12px;">Hoặc redeploy image tag cũ qua Helm hay manifest.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Teams notification</h2>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Nên gửi gì</h3>
+          <ul>
+            <li>tên pipeline</li>
+            <li>image tag hoặc release version</li>
+            <li>môi trường</li>
+            <li>URL public</li>
+            <li>trạng thái success hoặc failure</li>
+            <li>timestamp</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Ví dụ payload</h3>
+          <pre><code>{
+  "text": "Deploy AKS thành công cho marcom-report image 2026.06.23.1. URL: https://reports.example.com/"
+}</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Checklist go-live</h2>
+      <ul>
+        <li>có namespace chuẩn</li>
+        <li>có ACR và quyền pull image</li>
+        <li>Azure DevOps deploy được vào AKS</li>
+        <li>Ingress hoạt động</li>
+        <li>DNS trỏ đúng</li>
+        <li>TLS hoạt động</li>
+        <li>smoke check pass</li>
+        <li>Teams notify hoạt động</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Rủi ro chính</h2>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Rủi ro kỹ thuật</h3>
+          <ul>
+            <li>CI/CD phức tạp hơn VM.</li>
+            <li>Sai cấu hình Ingress hoặc TLS.</li>
+            <li>Rollback không rõ nếu không quản image tag chặt.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Cách giảm rủi ro</h3>
+          <ul>
+            <li>Chuẩn hóa chart hoặc manifest.</li>
+            <li>Dùng image tag rõ ràng.</li>
+            <li>Lưu immutable artifact.</li>
+            <li>Tách verify riêng cho DNS, TLS và path routing.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Kết luận</h2>
+      <p>
+        Nếu công ty đã có sẵn platform Kubernetes và team DevOps vận hành, thì AKS là một lựa chọn hợp lý
+        cho bài toán report HTML này.
+      </p>
+      <p>
+        Khuyến nghị thực tế là bắt đầu bằng mô hình đóng report vào image <code>Nginx</code>, chuẩn hóa release qua
+        <code>ACR + AKS + Ingress</code>, để pipeline xử lý <code>latest</code>, và để Azure DevOps xử lý notify Teams.
+      </p>
+      <p class="footer-note">
+        Tài liệu này là bản chi tiết riêng cho hướng triển khai AKS.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
