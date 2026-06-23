@@ -3,40 +3,37 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "System Architecture Diagram",
-    "subtitle": "Multi-report CI/CD model on one shared domain",
+    "subtitle": "Mô hình slug-only trên một domain dùng chung",
     "output": "system-architecture.html",
-    "viewBox": [1480, 640]
+    "viewBox": [1500, 640]
   },
   "components": [
-    { "id": "repo", "type": "external", "label": "Repository", "sublabel": "reports/*/v*/", "pos": [40, 280], "size": [150, 72] },
-    { "id": "pipeline", "type": "backend", "label": "Azure DevOps Pipeline", "sublabel": "detect + validate + deploy", "pos": [260, 280], "size": [180, 72] },
-    { "id": "artifact", "type": "cloud", "label": "Immutable Artifact", "sublabel": "per report/version", "pos": [520, 280], "size": [170, 72] },
-    { "id": "hosting", "type": "cloud", "label": "Hosting Layer", "sublabel": "Azure / Cloudflare / VM / App Service", "pos": [780, 280], "size": [220, 72] },
-    { "id": "version", "type": "frontend", "label": "Version URL", "sublabel": "/<report-slug>/<version>/", "pos": [1090, 220], "size": [180, 72] },
-    { "id": "latest", "type": "frontend", "label": "Stable Alias", "sublabel": "/<report-slug>/latest/", "pos": [1090, 360], "size": [180, 72] },
-    { "id": "users", "type": "external", "label": "Custom Domain / Users", "sublabel": "public access", "pos": [1310, 290], "size": [150, 72] }
+    { "id": "repo", "type": "external", "label": "Repository", "sublabel": "report slug source", "pos": [40, 280], "size": [150, 72] },
+    { "id": "pipeline", "type": "backend", "label": "Azure DevOps", "sublabel": "CI + CD", "pos": [260, 280], "size": [170, 72] },
+    { "id": "artifact", "type": "cloud", "label": "Artifact", "sublabel": "per slug", "pos": [510, 280], "size": [150, 72] },
+    { "id": "hosting", "type": "cloud", "label": "Hosting Layer", "sublabel": "chosen platform", "pos": [740, 280], "size": [190, 72] },
+    { "id": "route", "type": "frontend", "label": "/reports/<slug>", "sublabel": "stable endpoint", "pos": [1020, 280], "size": [170, 72] },
+    { "id": "users", "type": "external", "label": "Users", "sublabel": "public access", "pos": [1280, 280], "size": [120, 72] }
   ],
   "boundaries": [
     { "kind": "region", "label": "Source and Delivery", "wraps": ["repo", "pipeline", "artifact"], "pad": 22 },
-    { "kind": "region", "label": "Public Publishing Model", "wraps": ["hosting", "version", "latest", "users"], "pad": 22 }
+    { "kind": "region", "label": "Publish Model", "wraps": ["hosting", "route", "users"], "pad": 22 }
   ],
   "connections": [
     { "from": "repo", "to": "pipeline", "label": "trigger", "variant": "emphasis" },
     { "from": "pipeline", "to": "artifact", "label": "package", "variant": "emphasis" },
-    { "from": "artifact", "to": "hosting", "label": "release", "variant": "emphasis" },
-    { "from": "hosting", "to": "version", "label": "publish version", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
-    { "from": "hosting", "to": "latest", "label": "update latest", "variant": "security", "fromSide": "right", "toSide": "left" },
-    { "from": "version", "to": "users", "label": "permanent URL", "variant": "default", "fromSide": "right", "toSide": "left", "via": [[1270, 256], [1270, 326], [1310, 326]], "labelAt": [1270, 288] },
-    { "from": "latest", "to": "users", "label": "stable share URL", "variant": "emphasis", "fromSide": "right", "toSide": "left", "via": [[1270, 396], [1270, 326], [1310, 326]], "labelAt": [1270, 380] }
+    { "from": "artifact", "to": "hosting", "label": "deploy", "variant": "emphasis" },
+    { "from": "hosting", "to": "route", "label": "publish slug", "variant": "emphasis" },
+    { "from": "route", "to": "users", "label": "share URL", "variant": "default" }
   ],
   "cards": [
     {
       "dot": "cyan",
       "title": "Operating model",
       "items": [
-        "Mỗi report có slug riêng",
-        "Mỗi report có nhiều version cố định",
-        "latest luôn trỏ version deploy production thành công gần nhất"
+        "Mỗi slug có một endpoint public duy nhất",
+        "Pipeline build và deploy theo slug",
+        "Rollback là publish lại artifact slug trước đó"
       ]
     }
   ]

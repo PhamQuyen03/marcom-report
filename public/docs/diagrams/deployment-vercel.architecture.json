@@ -3,40 +3,37 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Deployment Diagram - Vercel",
-    "subtitle": "Vercel hosting with version path, latest alias, and Teams notifications",
+    "subtitle": "Slug-only publish qua Vercel project và Teams notification",
     "output": "deployment-vercel.html",
     "viewBox": [1600, 660]
   },
   "components": [
-    { "id": "repo", "type": "external", "label": "Repository", "sublabel": "reports/*/v*/", "pos": [40, 290], "size": [150, 72] },
-    { "id": "pipeline", "type": "backend", "label": "Azure DevOps", "sublabel": "Git integration or CLI deploy", "pos": [250, 290], "size": [190, 72] },
-    { "id": "artifact", "type": "cloud", "label": "Artifact / Build Output", "sublabel": "versioned static tree", "pos": [510, 290], "size": [180, 72] },
-    { "id": "vercel", "type": "cloud", "label": "Vercel", "sublabel": "project deployment", "pos": [760, 290], "size": [150, 72] },
-    { "id": "version", "type": "frontend", "label": "/slug/v2/", "sublabel": "permanent URL", "pos": [980, 220], "size": [150, 72] },
-    { "id": "latest", "type": "frontend", "label": "/slug/latest/", "sublabel": "alias or routed path", "pos": [980, 360], "size": [170, 72] },
-    { "id": "domain", "type": "cloud", "label": "Custom Domain", "sublabel": "Vercel edge network", "pos": [1230, 290], "size": [170, 72] },
-    { "id": "users", "type": "external", "label": "Users", "sublabel": "public access", "pos": [1460, 290], "size": [90, 72] },
-    { "id": "status", "type": "backend", "label": "Deploy Result", "sublabel": "success or failure", "pos": [980, 500], "size": [150, 72] },
-    { "id": "teams", "type": "external", "label": "Microsoft Teams", "sublabel": "notify channel", "pos": [1230, 500], "size": [170, 72] }
+    { "id": "repo", "type": "external", "label": "Repository", "sublabel": "slug source", "pos": [40, 290], "size": [150, 72] },
+    { "id": "pipeline", "type": "backend", "label": "Azure DevOps", "sublabel": "Git integration hoặc CLI deploy", "pos": [250, 290], "size": [220, 72] },
+    { "id": "artifact", "type": "cloud", "label": "Build Output", "sublabel": "slug publish tree", "pos": [540, 290], "size": [180, 72] },
+    { "id": "vercel", "type": "cloud", "label": "Vercel", "sublabel": "project deployment", "pos": [790, 290], "size": [150, 72] },
+    { "id": "domain", "type": "cloud", "label": "Custom Domain", "sublabel": "Vercel edge network", "pos": [1010, 290], "size": [180, 72] },
+    { "id": "route", "type": "frontend", "label": "/reports/<slug>", "sublabel": "stable endpoint", "pos": [1260, 290], "size": [170, 72] },
+    { "id": "users", "type": "external", "label": "Users", "sublabel": "public access", "pos": [1490, 290], "size": [90, 72] },
+    { "id": "status", "type": "backend", "label": "Deploy Result", "sublabel": "success or failure", "pos": [1010, 500], "size": [180, 72] },
+    { "id": "teams", "type": "external", "label": "Microsoft Teams", "sublabel": "notify channel", "pos": [1260, 500], "size": [180, 72] }
   ],
   "boundaries": [
-    { "kind": "region", "label": "Vercel Delivery Path", "wraps": ["pipeline", "artifact", "vercel", "version", "latest", "domain", "status"], "pad": 22 },
+    { "kind": "region", "label": "Vercel Delivery Path", "wraps": ["vercel", "domain", "route", "status"], "pad": 22 },
     { "kind": "region", "label": "Notification", "wraps": ["teams"], "pad": 22 }
   ],
   "connections": [
     { "from": "repo", "to": "pipeline", "label": "trigger", "variant": "emphasis" },
     { "from": "pipeline", "to": "artifact", "label": "build", "variant": "emphasis" },
     { "from": "artifact", "to": "vercel", "label": "deploy", "variant": "emphasis" },
-    { "from": "vercel", "to": "version", "variant": "default", "fromSide": "right", "toSide": "left" },
-    { "from": "vercel", "to": "latest", "variant": "security", "fromSide": "right", "toSide": "left" },
-    { "from": "version", "to": "domain", "variant": "default", "fromSide": "right", "toSide": "left", "via": [[1130, 256], [1130, 326], [1230, 326]] },
-    { "from": "latest", "to": "domain", "variant": "emphasis", "fromSide": "right", "toSide": "left", "via": [[1150, 396], [1150, 326], [1230, 326]] },
-    { "from": "domain", "to": "users", "variant": "emphasis" },
-    { "from": "vercel", "to": "status", "label": "deploy + smoke check", "variant": "default", "fromSide": "bottom", "toSide": "top", "via": [[835, 362], [835, 536], [980, 536]], "labelAt": [835, 500] },
-    { "from": "status", "to": "teams", "variant": "security", "fromSide": "right", "toSide": "left" }
+    { "from": "vercel", "to": "domain", "label": "publish edge", "variant": "default" },
+    { "from": "domain", "to": "route", "variant": "emphasis" },
+    { "from": "route", "to": "users", "variant": "default" },
+    { "from": "vercel", "to": "status", "variant": "default", "fromSide": "bottom", "toSide": "top", "via": [[865, 362], [865, 536], [1100, 536]] },
+    { "from": "status", "to": "teams", "variant": "security" }
   ],
   "cards": [
-    { "dot": "cyan", "title": "Azure DevOps fit", "items": ["Có thể đi qua Git integration với Azure DevOps", "Hoặc deploy qua Vercel CLI từ pipeline"] },
-    { "dot": "rose", "title": "Notification", "items": ["Success và failure đều gửi về Microsoft Teams"] }
+    { "dot": "cyan", "title": "Azure DevOps fit", "items": ["Có thể đi qua Git integration", "Hoặc deploy bằng Vercel CLI từ pipeline"] },
+    { "dot": "rose", "title": "Rollback", "items": ["Redeploy build slug trước đó", "Success và failure đều gửi về Microsoft Teams"] }
   ]
 }

@@ -3,45 +3,42 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "System Architecture Diagram",
-    "subtitle": "Tổng quan CI/CD cho nhiều báo cáo HTML trên một domain",
+    "subtitle": "CI/CD slug-only cho report HTML với notify Microsoft Teams",
     "output": "system-overview.html",
-    "viewBox": [1640, 700]
+    "viewBox": [1620, 680]
   },
   "components": [
-    { "id": "repo", "type": "external", "label": "Repository", "sublabel": "reports/*/v*/", "pos": [40, 300], "size": [150, 72] },
-    { "id": "pipeline", "type": "backend", "label": "Azure DevOps Pipeline", "sublabel": "detect + validate + package + deploy", "pos": [260, 300], "size": [220, 72] },
-    { "id": "artifact", "type": "cloud", "label": "Immutable Artifact", "sublabel": "per report/version", "pos": [560, 300], "size": [180, 72] },
-    { "id": "hosting", "type": "cloud", "label": "Hosting Layer", "sublabel": "Azure Storage / Cloudflare / VM / App Service", "pos": [830, 300], "size": [250, 72] },
-    { "id": "version", "type": "frontend", "label": "Version URL", "sublabel": "/<report-slug>/<version>/", "pos": [1160, 230], "size": [180, 72] },
-    { "id": "latest", "type": "frontend", "label": "Latest Alias", "sublabel": "/<report-slug>/latest/", "pos": [1160, 390], "size": [180, 72] },
-    { "id": "domain", "type": "external", "label": "Custom Domain / Users", "sublabel": "public access", "pos": [1410, 310], "size": [150, 72] },
-    { "id": "status", "type": "backend", "label": "Deploy Result", "sublabel": "success or failure", "pos": [830, 520], "size": [180, 72] },
-    { "id": "teams", "type": "external", "label": "Microsoft Teams", "sublabel": "release channel", "pos": [1160, 520], "size": [180, 72] }
+    { "id": "repo", "type": "external", "label": "Repository", "sublabel": "public/reports/<slug>.html", "pos": [40, 290], "size": [170, 72] },
+    { "id": "pipeline", "type": "backend", "label": "Azure DevOps Pipeline", "sublabel": "validate slug + build + deploy", "pos": [280, 290], "size": [220, 72] },
+    { "id": "artifact", "type": "cloud", "label": "Artifact", "sublabel": "immutable package per slug", "pos": [580, 290], "size": [190, 72] },
+    { "id": "hosting", "type": "cloud", "label": "Hosting Layer", "sublabel": "AKS / Storage / Cloudflare / VM / App Service", "pos": [850, 290], "size": [290, 72] },
+    { "id": "route", "type": "frontend", "label": "Public Route", "sublabel": "/reports/<slug>", "pos": [1220, 290], "size": [170, 72] },
+    { "id": "users", "type": "external", "label": "Users", "sublabel": "browser access", "pos": [1460, 290], "size": [100, 72] },
+    { "id": "status", "type": "backend", "label": "Deploy Result", "sublabel": "success or failure", "pos": [980, 500], "size": [180, 72] },
+    { "id": "teams", "type": "external", "label": "Microsoft Teams", "sublabel": "release channel", "pos": [1260, 500], "size": [180, 72] }
   ],
   "boundaries": [
     { "kind": "region", "label": "Delivery Backbone", "wraps": ["pipeline", "artifact", "hosting", "status"], "pad": 24 },
-    { "kind": "region", "label": "Public Access Model", "wraps": ["version", "latest", "domain"], "pad": 24 },
-    { "kind": "region", "label": "Notification Flow", "wraps": ["teams"], "pad": 24 }
+    { "kind": "region", "label": "Public Access", "wraps": ["route", "users"], "pad": 24 },
+    { "kind": "region", "label": "Notification", "wraps": ["teams"], "pad": 24 }
   ],
   "connections": [
     { "from": "repo", "to": "pipeline", "label": "trigger", "variant": "emphasis" },
     { "from": "pipeline", "to": "artifact", "label": "package", "variant": "emphasis" },
     { "from": "artifact", "to": "hosting", "label": "release", "variant": "emphasis" },
-    { "from": "hosting", "to": "version", "variant": "default", "fromSide": "right", "toSide": "left" },
-    { "from": "hosting", "to": "latest", "variant": "security", "fromSide": "right", "toSide": "left" },
-    { "from": "version", "to": "domain", "variant": "default", "fromSide": "right", "toSide": "left", "via": [[1340, 266], [1340, 346], [1410, 346]] },
-    { "from": "latest", "to": "domain", "variant": "emphasis", "fromSide": "right", "toSide": "left", "via": [[1340, 426], [1340, 346], [1410, 346]] },
-    { "from": "hosting", "to": "status", "label": "deploy + smoke check", "variant": "default", "fromSide": "bottom", "toSide": "top" },
-    { "from": "status", "to": "teams", "label": "notify success / failure", "variant": "security", "fromSide": "right", "toSide": "left" }
+    { "from": "hosting", "to": "route", "variant": "emphasis" },
+    { "from": "route", "to": "users", "variant": "default" },
+    { "from": "hosting", "to": "status", "variant": "default", "fromSide": "bottom", "toSide": "top", "via": [[995, 362], [995, 536], [1070, 536]] },
+    { "from": "status", "to": "teams", "variant": "security" }
   ],
   "cards": [
     {
       "dot": "cyan",
-      "title": "Nguyên tắc vận hành",
+      "title": "Operating model",
       "items": [
-        "Version path là immutable",
-        "latest luôn trỏ tới version deploy production thành công gần nhất",
-        "Một domain dùng chung cho nhiều report",
+        "Một report tương ứng một slug public ổn định",
+        "Không còn version path hay latest alias",
+        "Rollback bằng redeploy artifact slug trước đó",
         "Success hoặc failure đều bắn notify sang Microsoft Teams"
       ]
     }

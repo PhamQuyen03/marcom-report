@@ -496,12 +496,12 @@
         <div class="pulse-dot"></div>
         <h1>Deployment Diagram - Cloudflare Pages</h1>
       </div>
-      <p class="subtitle">Direct Upload model from Azure DevOps to edge static publish</p>
+      <p class="subtitle">Slug-only publish từ Azure DevOps lên edge platform</p>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container">
-      <svg viewBox="0 0 1580 640" role="img" aria-label="Deployment Diagram - Cloudflare Pages — Direct Upload model from Azure DevOps to edge static publish (architecture diagram)">
+      <svg viewBox="0 0 1580 640" role="img" aria-label="Deployment Diagram - Cloudflare Pages — Slug-only publish từ Azure DevOps lên edge platform (architecture diagram)">
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -525,89 +525,80 @@
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect x="678" y="198" width="704" height="394" rx="12" class="c-region" stroke-width="1"/>
-        <text x="686" y="216" class="t-cloud" font-size="9" font-weight="600">Cloudflare Publish Path</text>
+        <rect x="728" y="258" width="724" height="334" rx="12" class="c-region" stroke-width="1"/>
+        <text x="736" y="276" class="t-cloud" font-size="9" font-weight="600">Cloudflare Publish Path</text>
 
-        <rect x="1188" y="478" width="214" height="114" rx="12" class="c-region" stroke-width="1"/>
-        <text x="1196" y="496" class="t-cloud" font-size="9" font-weight="600">Notification</text>
+        <rect x="1238" y="478" width="224" height="114" rx="12" class="c-region" stroke-width="1"/>
+        <text x="1246" y="496" class="t-cloud" font-size="9" font-weight="600">Notification</text>
 
         <!-- Connection paths (before components for correct z-order) -->
         <path d="M 190 316 L 250 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 410 316 L 470 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 620 316 L 700 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 880 316 L 922 316 Q 930 316 930 308 L 930 264 Q 930 256 938 256 L 980 256" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 880 316 L 922 316 Q 930 316 930 324 L 930 388 Q 930 396 938 396 L 980 396" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
-        <path d="M 1130 256 L 1130 256 L 1130 308 Q 1130 316 1138 316 L 1210 316 L 1210 316" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 1130 396 L 1130 396 L 1130 324 Q 1130 316 1138 316 L 1210 316 L 1210 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 1360 316 L 1430 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 790 352 L 790 352 L 790 528 Q 790 536 798 536 L 972 536 Q 980 536 987.2121844597461 532.5381514593219 L 1055 500" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 1130 536 L 1210 536" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path d="M 420 316 L 490 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 670 316 L 750 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 930 316 L 1010 316" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 1180 316 L 1260 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 1430 316 L 1490 316" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 840 352 L 840 352 L 840 528 Q 840 536 848 536 L 1092 536 Q 1100 536 1100 528 L 1100 500" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 1190 536 L 1260 536" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
 
         <!-- Components -->
         <rect x="40" y="280" width="150" height="72" rx="6" class="c-mask"/>
         <rect x="40" y="280" width="150" height="72" rx="6" class="c-external" stroke-width="1.5"/>
         <text x="115" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Repository</text>
-        <text x="115" y="330" class="t-muted" font-size="9" text-anchor="middle">reports/*/v*/</text>
+        <text x="115" y="330" class="t-muted" font-size="9" text-anchor="middle">slug source</text>
 
-        <rect x="250" y="280" width="160" height="72" rx="6" class="c-mask"/>
-        <rect x="250" y="280" width="160" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-        <text x="330" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure DevOps</text>
-        <text x="330" y="330" class="t-muted" font-size="9" text-anchor="middle">prepare dist tree</text>
+        <rect x="250" y="280" width="170" height="72" rx="6" class="c-mask"/>
+        <rect x="250" y="280" width="170" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+        <text x="335" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure DevOps</text>
+        <text x="335" y="330" class="t-muted" font-size="9" text-anchor="middle">prepare dist tree</text>
 
-        <rect x="470" y="280" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="470" y="280" width="150" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="545" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Artifact / dist</text>
-        <text x="545" y="330" class="t-muted" font-size="9" text-anchor="middle">publish tree</text>
+        <rect x="490" y="280" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="490" y="280" width="180" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="580" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Artifact / dist</text>
+        <text x="580" y="330" class="t-muted" font-size="9" text-anchor="middle">slug publish tree</text>
 
-        <rect x="700" y="280" width="180" height="72" rx="6" class="c-mask"/>
-        <rect x="700" y="280" width="180" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="790" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Cloudflare Pages</text>
-        <text x="790" y="330" class="t-muted" font-size="9" text-anchor="middle">direct upload</text>
+        <rect x="750" y="280" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="750" y="280" width="180" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="840" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Cloudflare Pages</text>
+        <text x="840" y="330" class="t-muted" font-size="9" text-anchor="middle">direct upload</text>
 
-        <rect x="980" y="220" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="980" y="220" width="150" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
-        <text x="1055" y="254" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/slug/v2/</text>
-        <text x="1055" y="270" class="t-muted" font-size="9" text-anchor="middle">permanent URL</text>
+        <rect x="1010" y="280" width="170" height="72" rx="6" class="c-mask"/>
+        <rect x="1010" y="280" width="170" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="1095" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Custom Domain</text>
+        <text x="1095" y="330" class="t-muted" font-size="9" text-anchor="middle">Cloudflare edge</text>
 
-        <rect x="980" y="360" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="980" y="360" width="150" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
-        <text x="1055" y="394" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/slug/latest/</text>
-        <text x="1055" y="410" class="t-muted" font-size="9" text-anchor="middle">alias in dist tree</text>
+        <rect x="1260" y="280" width="170" height="72" rx="6" class="c-mask"/>
+        <rect x="1260" y="280" width="170" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
+        <text x="1345" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/reports/&lt;slug&gt;</text>
+        <text x="1345" y="330" class="t-muted" font-size="9" text-anchor="middle">stable endpoint</text>
 
-        <rect x="1210" y="280" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="1210" y="280" width="150" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="1285" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Custom Domain</text>
-        <text x="1285" y="330" class="t-muted" font-size="9" text-anchor="middle">Cloudflare edge</text>
+        <rect x="1490" y="280" width="90" height="72" rx="6" class="c-mask"/>
+        <rect x="1490" y="280" width="90" height="72" rx="6" class="c-external" stroke-width="1.5"/>
+        <text x="1535" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Users</text>
+        <text x="1535" y="330" class="t-muted" font-size="9" text-anchor="middle">public access</text>
 
-        <rect x="1430" y="280" width="90" height="72" rx="6" class="c-mask"/>
-        <rect x="1430" y="280" width="90" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="1475" y="314" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Users</text>
-        <text x="1475" y="330" class="t-muted" font-size="9" text-anchor="middle">public access</text>
+        <rect x="1010" y="500" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="1010" y="500" width="180" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+        <text x="1100" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Deploy Result</text>
+        <text x="1100" y="550" class="t-muted" font-size="9" text-anchor="middle">success or failure</text>
 
-        <rect x="980" y="500" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="980" y="500" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-        <text x="1055" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Deploy Result</text>
-        <text x="1055" y="550" class="t-muted" font-size="9" text-anchor="middle">success or failure</text>
-
-        <rect x="1210" y="500" width="170" height="72" rx="6" class="c-mask"/>
-        <rect x="1210" y="500" width="170" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="1295" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Teams</text>
-        <text x="1295" y="550" class="t-muted" font-size="9" text-anchor="middle">notify channel</text>
+        <rect x="1260" y="500" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="1260" y="500" width="180" height="72" rx="6" class="c-external" stroke-width="1.5"/>
+        <text x="1350" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Teams</text>
+        <text x="1350" y="550" class="t-muted" font-size="9" text-anchor="middle">notify channel</text>
 
         <!-- Connection labels -->
         <rect x="198.2" y="296" width="43.6" height="14" rx="3" class="c-mask"/>
         <text x="220" y="306" class="t-backend" font-size="8" text-anchor="middle">trigger</text>
-        <rect x="411" y="296" width="58" height="14" rx="3" class="c-mask"/>
-        <text x="440" y="306" class="t-backend" font-size="8" text-anchor="middle">build dist</text>
-        <rect x="619" y="296" width="82" height="14" rx="3" class="c-mask"/>
-        <text x="660" y="306" class="t-backend" font-size="8" text-anchor="middle">wrangler deploy</text>
+        <rect x="426" y="296" width="58" height="14" rx="3" class="c-mask"/>
+        <text x="455" y="306" class="t-backend" font-size="8" text-anchor="middle">build dist</text>
+        <rect x="669" y="296" width="82" height="14" rx="3" class="c-mask"/>
+        <text x="710" y="306" class="t-backend" font-size="8" text-anchor="middle">wrangler deploy</text>
+        <rect x="936.2" y="296" width="67.6" height="14" rx="3" class="c-mask"/>
+        <text x="970" y="306" class="t-muted" font-size="8" text-anchor="middle">publish edge</text>
 
 
 
-
-
-        <rect x="737" y="490" width="106" height="14" rx="3" class="c-mask"/>
-        <text x="790" y="500" class="t-muted" font-size="8" text-anchor="middle">deploy + smoke check</text>
 
 
         <!-- Legend -->
@@ -639,9 +630,10 @@
       <div class="card">
         <div class="card-header">
           <div class="card-dot rose"></div>
-          <h3>Notification</h3>
+          <h3>Rollback</h3>
         </div>
         <ul>
+          <li>&bull; Republish artifact slug trước đó</li>
           <li>&bull; Success và failure đều gửi về Microsoft Teams</li>
         </ul>
       </div>

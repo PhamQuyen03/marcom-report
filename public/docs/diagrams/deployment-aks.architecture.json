@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Deployment Diagram - AKS",
+    "subtitle": "Next.js app on AKS with Gateway API publish layer and Teams notification",
+    "output": "deployment-aks.html",
+    "viewBox": [1740, 680]
+  },
+  "components": [
+    { "id": "repo", "type": "external", "label": "Repository", "sublabel": "Next.js + public/reports/<slug>.html", "pos": [40, 300], "size": [210, 72] },
+    { "id": "pipeline", "type": "backend", "label": "Azure DevOps", "sublabel": "lint + validate + build + deploy", "pos": [320, 300], "size": [220, 72] },
+    { "id": "acr", "type": "cloud", "label": "Azure Container Registry", "sublabel": "app image per build", "pos": [610, 300], "size": [200, 72] },
+    { "id": "aks", "type": "cloud", "label": "AKS", "sublabel": "Next.js deployment + service", "pos": [890, 300], "size": [190, 72] },
+    { "id": "gateway", "type": "cloud", "label": "Gateway API Layer", "sublabel": "approuting-istio", "pos": [1150, 300], "size": [180, 72] },
+    { "id": "route", "type": "frontend", "label": "/reports/<slug>", "sublabel": "stable endpoint", "pos": [1390, 220], "size": [180, 72] },
+    { "id": "users", "type": "external", "label": "Users", "sublabel": "browser access", "pos": [1570, 300], "size": [90, 72] },
+    { "id": "status", "type": "backend", "label": "Deploy Result", "sublabel": "success or failure", "pos": [1150, 500], "size": [170, 72] },
+    { "id": "teams", "type": "external", "label": "Microsoft Teams", "sublabel": "notify channel", "pos": [1410, 500], "size": [170, 72] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "AKS Delivery Path", "wraps": ["pipeline", "acr", "aks", "gateway", "status"], "pad": 24 },
+    { "kind": "region", "label": "Public Access", "wraps": ["route", "users"], "pad": 24 },
+    { "kind": "region", "label": "Notification", "wraps": ["teams"], "pad": 24 }
+  ],
+  "connections": [
+    { "from": "repo", "to": "pipeline", "label": "trigger", "variant": "emphasis" },
+    { "from": "pipeline", "to": "acr", "variant": "emphasis" },
+    { "from": "acr", "to": "aks", "label": "pull image", "variant": "emphasis" },
+    { "from": "aks", "to": "gateway", "variant": "default" },
+    { "from": "gateway", "to": "route", "variant": "emphasis" },
+    { "from": "route", "to": "users", "variant": "default", "fromSide": "right", "toSide": "left", "via": [[1570, 256], [1570, 336], [1570, 336]] },
+    { "from": "aks", "to": "status", "variant": "default", "fromSide": "bottom", "toSide": "top", "via": [[985, 372], [985, 536], [1235, 536]] },
+    { "from": "status", "to": "teams", "variant": "security" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Khuyến nghị",
+      "items": [
+        "Phù hợp nhất với repo Next.js hiện tại",
+        "Dùng Gateway API layer với approuting-istio",
+        "Public route chỉ còn /reports/<slug>"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Rollback",
+      "items": [
+        "Rollback deployment",
+        "Hoặc redeploy image tag cũ",
+        "Success và failure đều gửi Teams"
+      ]
+    }
+  ]
+}

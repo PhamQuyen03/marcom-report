@@ -1,239 +1,191 @@
-# Azure DevOps CI/CD cho nhiều báo cáo HTML trên một domain
+# Azure DevOps CI/CD cho report HTML theo mô hình only slug
 
 ## Tóm tắt điều hành
 
-Tài liệu này mô tả một kiến trúc CI/CD dùng Azure DevOps để publish nhiều báo cáo HTML lên cùng một domain.
+Tài liệu này mô tả kiến trúc CI/CD dùng Azure DevOps để publish report HTML lên cùng một domain theo mô hình `only slug`.
 
 Mô hình vận hành đã chốt:
 
-- mỗi báo cáo có một `report-slug` riêng
-- mỗi báo cáo có nhiều version như `v1`, `v2`, `v3`
-- mỗi version có URL cố định, không bị ghi đè
-- mỗi báo cáo có thêm alias ổn định `latest/`
-- `latest/` luôn trỏ tới **version deploy production thành công gần nhất của chính báo cáo đó**
-- success hoặc failure đều có thể bắn notify về `Microsoft Teams`
+- mỗi report có một `slug` public duy nhất
+- public endpoint ổn định theo dạng `https://domain/reports/<slug>`
+- không dùng `version path`
+- không dùng alias `latest`
+- rollback bằng cách redeploy artifact cũ của chính slug đó
+- success hoặc failure đều bắn notify về `Microsoft Teams`
 
 ## Quy ước repository và URL
 
-### Cấu trúc thư mục
+### Public endpoint
 
 ```text
-reports/
-  nua-dau-nam-t1-t5-2026/
-    v1/
-      index.html
-      assets/
-    v2/
-      index.html
-      assets/
-  chien-dich-he-2026/
-    v1/
-      index.html
-      assets/
+https://domain/reports/<slug>
 ```
 
-### Mapping URL
+Ví dụ:
 
 ```text
-reports/<report-slug>/<version>/index.html
-    ->
-https://domain/<report-slug>/<version>/
+https://domain/reports/nua-dau-nam-t1-t5-2026
+https://domain/reports/bao-cao-ai-2026
 ```
 
-### Alias `latest`
+### Cấu trúc source đề xuất
 
 ```text
-https://domain/<report-slug>/latest/
-    ->
-version deploy production thành công gần nhất của report đó
+public/
+  reports/
+    nua-dau-nam-t1-t5-2026.html
+    bao-cao-ai-2026.html
 ```
 
-## System Architecture Diagram
+Khi đó:
 
-Sơ đồ tổng quan mô tả luồng chính của toàn project, đồng thời có nhánh notify về Microsoft Teams cho cả trạng thái success và failure.
+- file nguồn vẫn là `.html`
+- public route là `/reports/<slug>`
+- app hoặc hosting layer sẽ map slug sang file HTML tương ứng
 
 ## Nguyên tắc CI/CD chung
 
-- Build một lần, deploy nhiều nơi nếu cần.
-- Tách rõ CI và CD.
-- Dùng immutable artifact.
-- Không build lại artifact trong production stage.
+- Build một lần, deploy một artifact rõ ràng.
+- Tách CI và CD.
+- Không build lại trong production stage.
 - Secret không để trong repository.
-- Validate sớm: cấu trúc thư mục, file bắt buộc, smoke test.
-- Rollback phải nhanh và dễ dự đoán.
-- Giữ audit trail cho từng lần deploy.
-- Đường dẫn public phải bám chặt cấu trúc thư mục.
+- Validate sớm: file slug, path public, smoke check.
+- Rollback phải dễ dự đoán.
+- Mỗi lần deploy phải có audit trail.
+- Thông báo Teams phải có cả success và failure.
 
 ## Luồng pipeline chuẩn
 
-1. Detect folder thay đổi dưới `reports/*/v*/`.
-2. Validate folder version thay đổi.
-3. Package từng version thành immutable artifact.
-4. Deploy vào non-production nếu có.
-5. Approve production release.
-6. Deploy version vào `/<report-slug>/<version>/`.
-7. Cập nhật `/<report-slug>/latest/` sang version vừa deploy production thành công.
-8. Chạy smoke check trên cả URL version và URL `latest/`.
-9. Bắn notify success hoặc failure về Microsoft Teams.
-10. Nếu cần rollback thì re-point `latest/` hoặc restore version trước đó.
+1. Detect thay đổi ở report source.
+2. Validate naming rule của slug.
+3. Build artifact hoặc build image.
+4. Deploy lên môi trường mục tiêu.
+5. Smoke check `https://domain/reports/<slug>`.
+6. Gửi notify success hoặc failure về Microsoft Teams.
+7. Nếu cần rollback thì redeploy artifact cũ của slug đó.
 
-## Thứ tự khuyến nghị hiện tại
+## System Architecture Diagram
 
-Sắp xếp theo tiêu chí `dễ triển khai -> khó triển khai`:
+Sơ đồ tổng quan đã được cập nhật theo mô hình slug-only:
 
-1. Azure Storage Static Website kèm tùy chọn CDN
-2. VM với Nginx
-3. Cloudflare Pages
-4. Vercel
-5. Azure App Service
+- một artifact cho mỗi slug
+- một endpoint public ổn định cho mỗi slug
+- không còn `version/latest`
+- notify Teams sau deploy
 
-## Giải pháp 1: Azure Storage Static Website kèm tùy chọn CDN
+## Các giải pháp
 
-### Khi nào phù hợp
+### Giải pháp 1: AKS
 
-Dùng khi nội dung hoàn toàn là static HTML/CSS/JS/assets và muốn Azure-native, chi phí thấp, vận hành gọn.
+Đây là giải pháp phù hợp nhất với yêu cầu hiện tại nếu:
 
-### Deployment Diagram
+- repo chính vẫn là app `Next.js`
+- công ty đã có platform Kubernetes
+- team DevOps đã vận hành `AKS`, `ACR` và lớp publish traffic của cluster
 
-Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau bước deploy và smoke check.
+Checklist:
 
-### Checklist
+- build image `Next.js`
+- push lên `ACR`
+- deploy lên `AKS`
+- expose qua `Gateway API` publish layer
+- smoke check `/reports/<slug>`
+- notify Teams
 
-- Tạo static website trên storage account.
-- Upload artifact đúng cây thư mục slug/version.
-- Copy hoặc sync version thành công sang `latest/`.
-- Purge CDN hoặc Front Door nếu có cache.
-- Smoke check cả URL version và URL `latest/`.
+Rollback:
 
-### Rollback
+- rollback deployment
+- hoặc redeploy image tag cũ
 
-- Giữ nguyên version cũ.
-- Re-copy version cũ sang `latest/`.
-- Purge CDN lại.
+### Giải pháp 2: Cloudflare Pages
 
-## Giải pháp 2: VM với Nginx
+Phù hợp khi:
 
-### Khi nào phù hợp
+- muốn edge hosting global
+- muốn deploy nhanh từ Azure DevOps
+- không cần giữ toàn bộ app `Next.js` như production stack chính
 
-Dùng khi cần kiểm soát filesystem, symlink, web root và cấu hình Nginx ở mức sâu.
+Checklist:
 
-### Deployment Diagram
+- build publish tree
+- deploy bằng `wrangler pages deploy`
+- cấu hình domain
+- smoke check `/reports/<slug>`
+- notify Teams
 
-Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau bước deploy và smoke check.
+Rollback:
 
-### Checklist
+- republish artifact slug trước đó
 
-- Chuẩn bị release tree trên VM.
-- Copy artifact lên server và extract đúng path.
-- Update symlink hoặc alias `latest`.
-- Reload Nginx nếu cần thay đổi route.
-- Smoke check URL version và URL `latest/`.
+### Giải pháp 3: Vercel
 
-### Rollback
+Phù hợp khi:
 
-- Đổi symlink `latest` về version cũ.
-- Reload Nginx.
+- team quen hệ sinh thái Vercel
+- muốn managed frontend hosting
+- route public chỉ cần ổn định theo slug
 
-## Giải pháp 3: Cloudflare Pages
+Checklist:
 
-### Khi nào phù hợp
+- build output đúng rule slug
+- deploy qua Git integration hoặc CLI
+- cấu hình domain
+- smoke check
+- notify Teams
 
-Dùng khi muốn một static edge platform global, custom domain nhanh, vận hành gọn, rollback đơn giản.
+Rollback:
 
-### Deployment Diagram
+- redeploy build trước đó
 
-Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau bước deploy và smoke check.
+### Giải pháp 4: VM với Nginx
 
-### Checklist
+Phù hợp khi:
 
-- Tạo Pages project và chọn `Direct Upload`.
-- Chuẩn bị đầy đủ tree `dist/` theo slug/version/latest.
-- Cấu hình `CLOUDFLARE_API_TOKEN` và `CLOUDFLARE_ACCOUNT_ID`.
-- Deploy bằng `wrangler pages deploy`.
-- Smoke check URL version và URL `latest/`.
+- muốn toàn quyền với routing và file system
+- muốn chi phí hạ tầng thuần thấp
 
-### Ghi chú triển khai
+Checklist:
 
-- Có thể đi theo hướng `Direct Upload` từ Azure DevOps.
-- Phù hợp khi cần static edge hosting global.
+- copy artifact lên VM
+- rewrite `/reports/<slug>` sang file HTML tương ứng
+- smoke check
+- notify Teams
 
-### Rollback
+Rollback:
 
-- Giữ nguyên version cũ trong publish tree.
-- Re-publish version trước đó thành `latest/`.
-- Hoặc deploy lại artifact cũ.
+- restore file slug trước đó
 
-## Giải pháp 4: Vercel
+## Khuyến nghị thực tế hiện tại
 
-### Khi nào phù hợp
+Với bối cảnh hiện tại:
 
-Dùng khi team muốn thêm một lựa chọn frontend-hosting mạnh, có custom domain, rollback, edge delivery và có thể tích hợp với Azure DevOps qua Git integration hoặc CLI deploy.
+- repo chính là app `Next.js`
+- public route đã chốt theo `only slug`
+- công ty đã có sẵn platform Kubernetes
+- team DevOps đã vận hành AKS
 
-### Deployment Diagram
+thì hướng nên chốt để đồng bộ nhất là:
 
-Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau bước deploy và smoke check.
+1. `AKS`
+2. các giải pháp còn lại chỉ là phương án thay thế theo governance hoặc mục đích riêng
 
-### Checklist
+## Bảng so sánh nhanh
 
-- Tạo Vercel project cho domain hoặc subdomain tương ứng.
-- Chọn Git integration với Azure DevOps hoặc deploy bằng Vercel CLI.
-- Build output theo cấu trúc slug/version/latest trước khi deploy.
-- Cấu hình custom domain và rule route cho `latest/`.
-- Smoke check URL version và URL `latest/`.
-
-### Ghi chú triển khai
-
-- Phù hợp khi team quen hệ sinh thái frontend hosting của Vercel.
-- Có thể dùng Azure DevOps để điều phối release thay vì phụ thuộc hoàn toàn vào Git-based flow.
-- Notify success/failure vẫn có thể bắn về Microsoft Teams như các giải pháp còn lại.
-
-## Giải pháp 5: Azure App Service
-
-### Khi nào phù hợp
-
-Dùng khi muốn managed platform trong Azure và có khả năng sau này mở rộng beyond static-only hosting.
-
-### Deployment Diagram
-
-Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau bước deploy và smoke check.
-
-### Checklist
-
-- Deploy artifact vào App Service đúng content root.
-- Giữ cây slug/version nhất quán với public URL.
-- Cấu hình alias hoặc rewrite cho `latest/`.
-- Kiểm tra route thực tế sau deploy.
-- Smoke check URL version và URL `latest/`.
-
-### Rollback
-
-- Restore artifact cũ.
-- Re-point `latest/` về version trước đó.
-
-## Bảng so sánh
-
-| Tiêu chí | Azure Storage Static Website/CDN | VM với Nginx | Cloudflare Pages | Vercel | Azure App Service |
+| Tiêu chí | AKS | Cloudflare Pages | Vercel | App Service | VM + Nginx |
 | --- | --- | --- | --- | --- | --- |
-| Phù hợp với `/<report>/<version>/` | Rất tốt | Rất tốt | Rất tốt | Rất tốt | Tốt |
-| Phù hợp với `latest/` | Rất tốt | Rất tốt | Rất tốt | Tốt đến rất tốt | Tốt |
-| Độ phức tạp setup | Thấp | Trung bình đến cao | Thấp | Thấp đến trung bình | Trung bình |
-| Chi phí vận hành | Thấp | Trung bình đến cao | Thấp đến trung bình | Thấp đến trung bình | Trung bình |
-| Độ dễ rollback | Cao | Cao | Cao | Trung bình đến cao | Trung bình đến cao |
-| Khuyến nghị tổng thể | Giải pháp 1 | Giải pháp 2 | Giải pháp 3 | Giải pháp 4 | Giải pháp 5 |
+| Route slug ổn định | Rất tốt | Rất tốt | Rất tốt | Tốt | Rất tốt |
+| Phù hợp repo Next.js hiện tại | Rất tốt | Trung bình | Trung bình | Tốt | Trung bình |
+| Độ đồng bộ với platform công ty | Rất tốt | Trung bình | Trung bình | Tốt | Trung bình |
+| Rollback | Cao | Cao | Cao | Cao | Cao |
+| Độ dễ setup riêng lẻ | Cao | Thấp đến trung bình | Trung bình | Trung bình | Trung bình |
 
 ## Kết luận
 
-Nếu ưu tiên tiêu chí `dễ triển khai trước`, thứ tự khuyến nghị hiện tại là:
+Mô hình `only slug` giúp tài liệu, routing, rollout và vận hành đơn giản hơn rất nhiều:
 
-1. Azure Storage Static Website/CDN
-2. VM với Nginx
-3. Cloudflare Pages
-4. Vercel
-5. Azure App Service
+- người dùng chỉ nhớ một URL ổn định
+- pipeline chỉ cần quan tâm slug nào được deploy
+- rollback rõ ràng theo artifact của slug
+- không còn logic `version/latest` gây rối
 
-Trong đó:
-
-- Azure Storage Static Website/CDN phù hợp hơn nếu muốn triển khai nhanh, ít vận hành
-- VM với Nginx linh hoạt nhất nhưng cũng nặng vận hành nhất
-- Cloudflare Pages và Vercel ở giữa vì vẫn managed nhưng cần nhiều cấu hình hơn static hosting thuần
-- Azure App Service ở cuối vì cần nhiều cấu hình nhất
+Với yêu cầu hiện tại, `AKS` nên là giải pháp số 1 trong tài liệu tổng quan để đồng bộ với toàn bộ hệ thống đang có.

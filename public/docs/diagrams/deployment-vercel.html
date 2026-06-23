@@ -496,12 +496,12 @@
         <div class="pulse-dot"></div>
         <h1>Deployment Diagram - Vercel</h1>
       </div>
-      <p class="subtitle">Vercel hosting with version path, latest alias, and Teams notifications</p>
+      <p class="subtitle">Slug-only publish qua Vercel project và Teams notification</p>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container">
-      <svg viewBox="0 0 1600 660" role="img" aria-label="Deployment Diagram - Vercel — Vercel hosting with version path, latest alias, and Teams notifications (architecture diagram)">
+      <svg viewBox="0 0 1600 660" role="img" aria-label="Deployment Diagram - Vercel — Slug-only publish qua Vercel project và Teams notification (architecture diagram)">
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -525,89 +525,80 @@
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect x="228" y="198" width="1194" height="394" rx="12" class="c-region" stroke-width="1"/>
-        <text x="236" y="216" class="t-cloud" font-size="9" font-weight="600">Vercel Delivery Path</text>
+        <rect x="768" y="268" width="684" height="324" rx="12" class="c-region" stroke-width="1"/>
+        <text x="776" y="286" class="t-cloud" font-size="9" font-weight="600">Vercel Delivery Path</text>
 
-        <rect x="1208" y="478" width="214" height="114" rx="12" class="c-region" stroke-width="1"/>
-        <text x="1216" y="496" class="t-cloud" font-size="9" font-weight="600">Notification</text>
+        <rect x="1238" y="478" width="224" height="114" rx="12" class="c-region" stroke-width="1"/>
+        <text x="1246" y="496" class="t-cloud" font-size="9" font-weight="600">Notification</text>
 
         <!-- Connection paths (before components for correct z-order) -->
         <path d="M 190 326 L 250 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 440 326 L 510 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 690 326 L 760 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 910 326 L 937 326 Q 945 326 945 318 L 945 264 Q 945 256 953 256 L 980 256" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 910 326 L 937 326 Q 945 326 945 334 L 945 388 Q 945 396 953 396 L 980 396" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
-        <path d="M 1130 256 L 1130 256 L 1130 318 Q 1130 326 1138 326 L 1230 326 L 1230 326" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 1150 396 L 1150 396 L 1150 334 Q 1150 326 1158 326 L 1230 326 L 1230 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 1400 326 L 1460 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 835 362 L 835 362 L 835 528 Q 835 536 843 536 L 972 536 Q 980 536 987.2121844597461 532.5381514593219 L 1055 500" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 1130 536 L 1230 536" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path d="M 470 326 L 540 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 720 326 L 790 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 940 326 L 1010 326" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 1190 326 L 1260 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 1430 326 L 1490 326" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 865 362 L 865 362 L 865 528 Q 865 536 873 536 L 1092 536 Q 1100 536 1100 528 L 1100 500" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 1190 536 L 1260 536" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
 
         <!-- Components -->
         <rect x="40" y="290" width="150" height="72" rx="6" class="c-mask"/>
         <rect x="40" y="290" width="150" height="72" rx="6" class="c-external" stroke-width="1.5"/>
         <text x="115" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Repository</text>
-        <text x="115" y="340" class="t-muted" font-size="9" text-anchor="middle">reports/*/v*/</text>
+        <text x="115" y="340" class="t-muted" font-size="9" text-anchor="middle">slug source</text>
 
-        <rect x="250" y="290" width="190" height="72" rx="6" class="c-mask"/>
-        <rect x="250" y="290" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-        <text x="345" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure DevOps</text>
-        <text x="345" y="340" class="t-muted" font-size="9" text-anchor="middle">Git integration or CLI deploy</text>
+        <rect x="250" y="290" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="250" y="290" width="220" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+        <text x="360" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure DevOps</text>
+        <text x="360" y="340" class="t-muted" font-size="9" text-anchor="middle">Git integration hoặc CLI deploy</text>
 
-        <rect x="510" y="290" width="180" height="72" rx="6" class="c-mask"/>
-        <rect x="510" y="290" width="180" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="600" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Artifact / Build Output</text>
-        <text x="600" y="340" class="t-muted" font-size="9" text-anchor="middle">versioned static tree</text>
+        <rect x="540" y="290" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="540" y="290" width="180" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="630" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Build Output</text>
+        <text x="630" y="340" class="t-muted" font-size="9" text-anchor="middle">slug publish tree</text>
 
-        <rect x="760" y="290" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="760" y="290" width="150" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="835" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Vercel</text>
-        <text x="835" y="340" class="t-muted" font-size="9" text-anchor="middle">project deployment</text>
+        <rect x="790" y="290" width="150" height="72" rx="6" class="c-mask"/>
+        <rect x="790" y="290" width="150" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="865" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Vercel</text>
+        <text x="865" y="340" class="t-muted" font-size="9" text-anchor="middle">project deployment</text>
 
-        <rect x="980" y="220" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="980" y="220" width="150" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
-        <text x="1055" y="254" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/slug/v2/</text>
-        <text x="1055" y="270" class="t-muted" font-size="9" text-anchor="middle">permanent URL</text>
+        <rect x="1010" y="290" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="1010" y="290" width="180" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="1100" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Custom Domain</text>
+        <text x="1100" y="340" class="t-muted" font-size="9" text-anchor="middle">Vercel edge network</text>
 
-        <rect x="980" y="360" width="170" height="72" rx="6" class="c-mask"/>
-        <rect x="980" y="360" width="170" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
-        <text x="1065" y="394" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/slug/latest/</text>
-        <text x="1065" y="410" class="t-muted" font-size="9" text-anchor="middle">alias or routed path</text>
+        <rect x="1260" y="290" width="170" height="72" rx="6" class="c-mask"/>
+        <rect x="1260" y="290" width="170" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
+        <text x="1345" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/reports/&lt;slug&gt;</text>
+        <text x="1345" y="340" class="t-muted" font-size="9" text-anchor="middle">stable endpoint</text>
 
-        <rect x="1230" y="290" width="170" height="72" rx="6" class="c-mask"/>
-        <rect x="1230" y="290" width="170" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="1315" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Custom Domain</text>
-        <text x="1315" y="340" class="t-muted" font-size="9" text-anchor="middle">Vercel edge network</text>
+        <rect x="1490" y="290" width="90" height="72" rx="6" class="c-mask"/>
+        <rect x="1490" y="290" width="90" height="72" rx="6" class="c-external" stroke-width="1.5"/>
+        <text x="1535" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Users</text>
+        <text x="1535" y="340" class="t-muted" font-size="9" text-anchor="middle">public access</text>
 
-        <rect x="1460" y="290" width="90" height="72" rx="6" class="c-mask"/>
-        <rect x="1460" y="290" width="90" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="1505" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Users</text>
-        <text x="1505" y="340" class="t-muted" font-size="9" text-anchor="middle">public access</text>
+        <rect x="1010" y="500" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="1010" y="500" width="180" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+        <text x="1100" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Deploy Result</text>
+        <text x="1100" y="550" class="t-muted" font-size="9" text-anchor="middle">success or failure</text>
 
-        <rect x="980" y="500" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="980" y="500" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-        <text x="1055" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Deploy Result</text>
-        <text x="1055" y="550" class="t-muted" font-size="9" text-anchor="middle">success or failure</text>
-
-        <rect x="1230" y="500" width="170" height="72" rx="6" class="c-mask"/>
-        <rect x="1230" y="500" width="170" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="1315" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Teams</text>
-        <text x="1315" y="550" class="t-muted" font-size="9" text-anchor="middle">notify channel</text>
+        <rect x="1260" y="500" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="1260" y="500" width="180" height="72" rx="6" class="c-external" stroke-width="1.5"/>
+        <text x="1350" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Teams</text>
+        <text x="1350" y="550" class="t-muted" font-size="9" text-anchor="middle">notify channel</text>
 
         <!-- Connection labels -->
         <rect x="198.2" y="306" width="43.6" height="14" rx="3" class="c-mask"/>
         <text x="220" y="316" class="t-backend" font-size="8" text-anchor="middle">trigger</text>
-        <rect x="458" y="306" width="34" height="14" rx="3" class="c-mask"/>
-        <text x="475" y="316" class="t-backend" font-size="8" text-anchor="middle">build</text>
-        <rect x="705.6" y="306" width="38.8" height="14" rx="3" class="c-mask"/>
-        <text x="725" y="316" class="t-backend" font-size="8" text-anchor="middle">deploy</text>
+        <rect x="488" y="306" width="34" height="14" rx="3" class="c-mask"/>
+        <text x="505" y="316" class="t-backend" font-size="8" text-anchor="middle">build</text>
+        <rect x="735.6" y="306" width="38.8" height="14" rx="3" class="c-mask"/>
+        <text x="755" y="316" class="t-backend" font-size="8" text-anchor="middle">deploy</text>
+        <rect x="941.2" y="306" width="67.6" height="14" rx="3" class="c-mask"/>
+        <text x="975" y="316" class="t-muted" font-size="8" text-anchor="middle">publish edge</text>
 
 
 
-
-
-        <rect x="782" y="490" width="106" height="14" rx="3" class="c-mask"/>
-        <text x="835" y="500" class="t-muted" font-size="8" text-anchor="middle">deploy + smoke check</text>
 
 
         <!-- Legend -->
@@ -631,17 +622,18 @@
           <h3>Azure DevOps fit</h3>
         </div>
         <ul>
-          <li>&bull; Có thể đi qua Git integration với Azure DevOps</li>
-          <li>&bull; Hoặc deploy qua Vercel CLI từ pipeline</li>
+          <li>&bull; Có thể đi qua Git integration</li>
+          <li>&bull; Hoặc deploy bằng Vercel CLI từ pipeline</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot rose"></div>
-          <h3>Notification</h3>
+          <h3>Rollback</h3>
         </div>
         <ul>
+          <li>&bull; Redeploy build slug trước đó</li>
           <li>&bull; Success và failure đều gửi về Microsoft Teams</li>
         </ul>
       </div>
