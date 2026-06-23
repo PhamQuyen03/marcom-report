@@ -82,10 +82,10 @@ Sơ đồ tổng quan mô tả luồng chính của toàn project, đồng thờ
 Sắp xếp theo tiêu chí `dễ triển khai -> khó triển khai`:
 
 1. Azure Storage Static Website kèm tùy chọn CDN
-2. Cloudflare Pages
-3. Vercel
-4. Azure App Service
-5. VM với Nginx
+2. VM với Nginx
+3. Cloudflare Pages
+4. Vercel
+5. Azure App Service
 
 ## Giải pháp 1: Azure Storage Static Website kèm tùy chọn CDN
 
@@ -111,7 +111,30 @@ Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau
 - Re-copy version cũ sang `latest/`.
 - Purge CDN lại.
 
-## Giải pháp 2: Cloudflare Pages
+## Giải pháp 2: VM với Nginx
+
+### Khi nào phù hợp
+
+Dùng khi cần kiểm soát filesystem, symlink, web root và cấu hình Nginx ở mức sâu.
+
+### Deployment Diagram
+
+Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau bước deploy và smoke check.
+
+### Checklist
+
+- Chuẩn bị release tree trên VM.
+- Copy artifact lên server và extract đúng path.
+- Update symlink hoặc alias `latest`.
+- Reload Nginx nếu cần thay đổi route.
+- Smoke check URL version và URL `latest/`.
+
+### Rollback
+
+- Đổi symlink `latest` về version cũ.
+- Reload Nginx.
+
+## Giải pháp 3: Cloudflare Pages
 
 ### Khi nào phù hợp
 
@@ -140,7 +163,7 @@ Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau
 - Re-publish version trước đó thành `latest/`.
 - Hoặc deploy lại artifact cũ.
 
-## Giải pháp 3: Vercel
+## Giải pháp 4: Vercel
 
 ### Khi nào phù hợp
 
@@ -164,7 +187,7 @@ Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau
 - Có thể dùng Azure DevOps để điều phối release thay vì phụ thuộc hoàn toàn vào Git-based flow.
 - Notify success/failure vẫn có thể bắn về Microsoft Teams như các giải pháp còn lại.
 
-## Giải pháp 4: Azure App Service
+## Giải pháp 5: Azure App Service
 
 ### Khi nào phù hợp
 
@@ -187,38 +210,15 @@ Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau
 - Restore artifact cũ.
 - Re-point `latest/` về version trước đó.
 
-## Giải pháp 5: VM với Nginx
-
-### Khi nào phù hợp
-
-Dùng khi cần kiểm soát filesystem, symlink, web root và cấu hình Nginx ở mức sâu.
-
-### Deployment Diagram
-
-Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau bước deploy và smoke check.
-
-### Checklist
-
-- Chuẩn bị release tree trên VM.
-- Copy artifact lên server và extract đúng path.
-- Update symlink hoặc alias `latest`.
-- Reload Nginx nếu cần thay đổi route.
-- Smoke check URL version và URL `latest/`.
-
-### Rollback
-
-- Đổi symlink `latest` về version cũ.
-- Reload Nginx.
-
 ## Bảng so sánh
 
-| Tiêu chí | Azure Storage Static Website/CDN | Cloudflare Pages | Vercel | Azure App Service | VM với Nginx |
+| Tiêu chí | Azure Storage Static Website/CDN | VM với Nginx | Cloudflare Pages | Vercel | Azure App Service |
 | --- | --- | --- | --- | --- | --- |
-| Phù hợp với `/<report>/<version>/` | Rất tốt | Rất tốt | Rất tốt | Tốt | Rất tốt |
-| Phù hợp với `latest/` | Rất tốt | Rất tốt | Tốt đến rất tốt | Tốt | Rất tốt |
-| Độ phức tạp setup | Thấp | Thấp | Thấp đến trung bình | Trung bình | Trung bình đến cao |
-| Chi phí vận hành | Thấp | Thấp đến trung bình | Thấp đến trung bình | Trung bình | Trung bình đến cao |
-| Độ dễ rollback | Cao | Cao | Trung bình đến cao | Trung bình đến cao | Cao |
+| Phù hợp với `/<report>/<version>/` | Rất tốt | Rất tốt | Rất tốt | Rất tốt | Tốt |
+| Phù hợp với `latest/` | Rất tốt | Rất tốt | Rất tốt | Tốt đến rất tốt | Tốt |
+| Độ phức tạp setup | Thấp | Trung bình đến cao | Thấp | Thấp đến trung bình | Trung bình |
+| Chi phí vận hành | Thấp | Trung bình đến cao | Thấp đến trung bình | Thấp đến trung bình | Trung bình |
+| Độ dễ rollback | Cao | Cao | Cao | Trung bình đến cao | Trung bình đến cao |
 | Khuyến nghị tổng thể | Giải pháp 1 | Giải pháp 2 | Giải pháp 3 | Giải pháp 4 | Giải pháp 5 |
 
 ## Kết luận
@@ -226,13 +226,14 @@ Sơ đồ cũng bao gồm nhánh notify success/failure về Microsoft Teams sau
 Nếu ưu tiên tiêu chí `dễ triển khai trước`, thứ tự khuyến nghị hiện tại là:
 
 1. Azure Storage Static Website/CDN
-2. Cloudflare Pages
-3. Vercel
-4. Azure App Service
-5. VM với Nginx
+2. VM với Nginx
+3. Cloudflare Pages
+4. Vercel
+5. Azure App Service
 
 Trong đó:
 
-- 3 giải pháp đầu phù hợp hơn nếu muốn triển khai nhanh, ít vận hành
-- Azure App Service ở giữa vì vẫn managed nhưng cần nhiều cấu hình hơn static hosting thuần
+- Azure Storage Static Website/CDN phù hợp hơn nếu muốn triển khai nhanh, ít vận hành
 - VM với Nginx linh hoạt nhất nhưng cũng nặng vận hành nhất
+- Cloudflare Pages và Vercel ở giữa vì vẫn managed nhưng cần nhiều cấu hình hơn static hosting thuần
+- Azure App Service ở cuối vì cần nhiều cấu hình nhất
