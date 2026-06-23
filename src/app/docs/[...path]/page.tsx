@@ -1,24 +1,40 @@
-"use client";
+import fs from "fs";
+import path from "path";
+import { notFound } from "next/navigation";
 
-import { useParams } from "next/navigation";
+const DOCS_DIR = path.join(process.cwd(), "public/docs");
 
-export default function DocumentView() {
-	const params = useParams();
-	const path = Array.isArray(params.path) ? params.path.join("/") : "";
+function getValidDocs(): string[] {
+  try {
+    return fs
+      .readdirSync(DOCS_DIR)
+      .filter((f) => f.endsWith(".html"))
+      .map((f) => f.replace(/\.html$/, ""));
+  } catch {
+    return [];
+  }
+}
 
-	if (!path) {
-		return (
-			<div className="flex items-center justify-center h-screen">
-				<p className="text-gray-500">Document not found</p>
-			</div>
-		);
-	}
+export default async function DocumentView({
+  params,
+}: {
+  params: Promise<{ path: string[] }>;
+}) {
+  const { path: segments } = await params;
+  const slug = segments?.join("/") ?? "";
 
-	return (
-		<iframe
-			src={`/docs/${path}.html`}
-			className="w-full h-screen border-0"
-			title="Document"
-		/>
-	);
+  if (!slug) notFound();
+
+  const validDocs = getValidDocs();
+  const decoded = decodeURIComponent(slug);
+
+  if (!validDocs.includes(decoded)) notFound();
+
+  return (
+    <iframe
+      src={`/docs/${decoded}.html`}
+      className="w-full h-screen border-0"
+      title="Document"
+    />
+  );
 }

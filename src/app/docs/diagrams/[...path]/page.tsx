@@ -1,24 +1,40 @@
-"use client";
+import fs from "fs";
+import path from "path";
+import { notFound } from "next/navigation";
 
-import { useParams } from "next/navigation";
+const DIAGRAMS_DIR = path.join(process.cwd(), "public/docs/diagrams");
 
-export default function DocumentView() {
-    const params = useParams();
-    const path = Array.isArray(params.path) ? params.path.join("/") : "";
+function getValidDiagrams(): string[] {
+  try {
+    return fs
+      .readdirSync(DIAGRAMS_DIR)
+      .filter((f) => f.endsWith(".html"))
+      .map((f) => f.replace(/\.html$/, ""));
+  } catch {
+    return [];
+  }
+}
 
-    if (!path) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <p className="text-gray-500">Document not found</p>
-            </div>
-        );
-    }
+export default async function DocumentView({
+  params,
+}: {
+  params: Promise<{ path: string[] }>;
+}) {
+  const { path: segments } = await params;
+  const slug = segments?.join("/") ?? "";
 
-    return (
-        <iframe
-            src={`/docs/diagrams/${path}.html`}
-            className="w-full h-screen border-0"
-            title="Document"
-        />
-    );
+  if (!slug) notFound();
+
+  const validDiagrams = getValidDiagrams();
+  const decoded = decodeURIComponent(slug);
+
+  if (!validDiagrams.includes(decoded)) notFound();
+
+  return (
+    <iframe
+      src={`/docs/diagrams/${decoded}.html`}
+      className="w-full h-screen border-0"
+      title="Document"
+    />
+  );
 }
