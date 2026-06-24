@@ -496,12 +496,12 @@
         <div class="pulse-dot"></div>
         <h1>System Architecture Diagram</h1>
       </div>
-      <p class="subtitle">Web portal trên AKS cho internal và external user với Entra External ID</p>
+      <p class="subtitle">High-level solution architecture cho internal và external access</p>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container">
-      <svg viewBox="0 0 1840 700" role="img" aria-label="System Architecture Diagram — Web portal trên AKS cho internal và external user với Entra External ID (architecture diagram)">
+      <svg viewBox="0 0 1760 620" role="img" aria-label="System Architecture Diagram — High-level solution architecture cho internal và external access (architecture diagram)">
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -525,109 +525,74 @@
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect x="18" y="18" width="1634" height="324" rx="12" class="c-region" stroke-width="1"/>
-        <text x="26" y="36" class="t-cloud" font-size="9" font-weight="600">Public Access and Identity</text>
-
-        <rect x="18" y="448" width="614" height="114" rx="12" class="c-region" stroke-width="1"/>
-        <text x="26" y="466" class="t-cloud" font-size="9" font-weight="600">Source and Delivery</text>
+        <rect x="16" y="46" width="1508" height="336" rx="12" class="c-region" stroke-width="1"/>
+        <text x="24" y="64" class="t-cloud" font-size="9" font-weight="600">Logical Solution Architecture</text>
 
         <!-- Connection paths (before components for correct z-order) -->
-        <path d="M 210 156 L 237 156 Q 245 156 245 164 L 245 213 Q 245 221 253 221 L 280 221" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 220 286 L 242 286 Q 250 286 250 278 L 250 229 Q 250 221 258 221 L 280 221" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 460 221 L 530 221" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 750 221 L 820 221" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 1030 221 L 1100 221" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 1210 185 L 1212.5 185 Q 1215 185 1215 182.5 L 1215 114.5 Q 1215 112 1217.5 112 L 1220 112" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
-        <path d="M 1320 221 L 1410 221" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 190 506 L 240 506" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 410 506 L 470 506" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path d="M 540 470 L 540 470 L 540 368 Q 540 360 548 360 L 1202 360 Q 1210 360 1210 352 L 1210 257 L 1210 257" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 220 186 L 225 186 Q 230 186 230 191 L 230 248 Q 230 256 238 256 L 300 256 L 300 256" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 230 326 L 235 326 Q 240 326 240 321 L 240 264 Q 240 256 248 256 L 300 256 L 300 256" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 520 256 L 620 256" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 735 220 L 736.25 220 Q 737.5 220 737.5 218.75 L 737.5 143.25 Q 737.5 142 738.75 142 L 740 142" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path d="M 850 256 L 950 256" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path d="M 850 256 L 850 256 L 1070 256 L 1070 256 L 1270 256 L 1270 256" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
         <!-- Components -->
-        <rect x="40" y="120" width="170" height="72" rx="6" class="c-mask"/>
-        <rect x="40" y="120" width="170" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="125" y="154" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Internal Users</text>
-        <text x="125" y="170" class="t-muted" font-size="9" text-anchor="middle">corporate sign-in</text>
+        <rect x="40" y="150" width="180" height="72" rx="6" class="c-mask"/>
+        <rect x="40" y="150" width="180" height="72" rx="6" class="c-external" stroke-width="1.5"/>
+        <text x="130" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Internal Users</text>
+        <text x="130" y="200" class="t-muted" font-size="9" text-anchor="middle">workforce identities</text>
 
-        <rect x="40" y="250" width="180" height="72" rx="6" class="c-mask"/>
-        <rect x="40" y="250" width="180" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="130" y="284" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">External Users</text>
-        <text x="130" y="300" class="t-muted" font-size="9" text-anchor="middle">external identities</text>
+        <rect x="40" y="290" width="190" height="72" rx="6" class="c-mask"/>
+        <rect x="40" y="290" width="190" height="72" rx="6" class="c-external" stroke-width="1.5"/>
+        <text x="135" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">External Users</text>
+        <text x="135" y="340" class="t-muted" font-size="9" text-anchor="middle">partner / agency / guest</text>
 
-        <rect x="280" y="185" width="180" height="72" rx="6" class="c-mask"/>
-        <rect x="280" y="185" width="180" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
-        <text x="370" y="219" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">/reports/&lt;slug&gt;</text>
-        <text x="370" y="235" class="t-muted" font-size="9" text-anchor="middle">stable portal URL</text>
+        <rect x="300" y="220" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="300" y="220" width="220" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
+        <text x="410" y="254" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Public Web Entry</text>
+        <text x="410" y="270" class="t-muted" font-size="9" text-anchor="middle">domain / edge protection</text>
 
-        <rect x="530" y="185" width="220" height="72" rx="6" class="c-mask"/>
-        <rect x="530" y="185" width="220" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="640" y="219" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure Front Door Premium</text>
-        <text x="640" y="235" class="t-muted" font-size="9" text-anchor="middle">WAF + custom domain</text>
+        <rect x="620" y="220" width="230" height="72" rx="6" class="c-mask"/>
+        <rect x="620" y="220" width="230" height="72" rx="6" class="c-frontend" stroke-width="1.5"/>
+        <text x="735" y="254" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Web Portal</text>
+        <text x="735" y="270" class="t-muted" font-size="9" text-anchor="middle">UI + auth + access control</text>
 
-        <rect x="820" y="185" width="210" height="72" rx="6" class="c-mask"/>
-        <rect x="820" y="185" width="210" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="925" y="219" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Gateway API Layer</text>
-        <text x="925" y="235" class="t-muted" font-size="9" text-anchor="middle">AKS application routing</text>
+        <rect x="620" y="70" width="240" height="72" rx="6" class="c-mask"/>
+        <rect x="620" y="70" width="240" height="72" rx="6" class="c-security" stroke-width="1.5"/>
+        <text x="740" y="104" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Identity Provider</text>
+        <text x="740" y="120" class="t-muted" font-size="9" text-anchor="middle">Microsoft Entra External ID</text>
 
-        <rect x="1100" y="185" width="220" height="72" rx="6" class="c-mask"/>
-        <rect x="1100" y="185" width="220" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="1210" y="219" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">AKS Next.js App</text>
-        <text x="1210" y="235" class="t-muted" font-size="9" text-anchor="middle">web portal + auth + ACL</text>
+        <rect x="950" y="220" width="220" height="72" rx="6" class="c-mask"/>
+        <rect x="950" y="220" width="220" height="72" rx="6" class="c-database" stroke-width="1.5"/>
+        <text x="1060" y="254" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Authorization Store</text>
+        <text x="1060" y="270" class="t-muted" font-size="9" text-anchor="middle">role mapping + ACL</text>
 
-        <rect x="1100" y="40" width="240" height="72" rx="6" class="c-mask"/>
-        <rect x="1100" y="40" width="240" height="72" rx="6" class="c-security" stroke-width="1.5"/>
-        <text x="1220" y="74" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Entra External ID</text>
-        <text x="1220" y="90" class="t-muted" font-size="9" text-anchor="middle">OIDC / CIAM / user directory</text>
-
-        <rect x="1410" y="185" width="220" height="72" rx="6" class="c-mask"/>
-        <rect x="1410" y="185" width="220" height="72" rx="6" class="c-database" stroke-width="1.5"/>
-        <text x="1520" y="219" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Authorization Store</text>
-        <text x="1520" y="235" class="t-muted" font-size="9" text-anchor="middle">report ACL + role mapping</text>
-
-        <rect x="40" y="470" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="40" y="470" width="150" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="115" y="504" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Repository</text>
-        <text x="115" y="520" class="t-muted" font-size="9" text-anchor="middle">report slug source</text>
-
-        <rect x="240" y="470" width="170" height="72" rx="6" class="c-mask"/>
-        <rect x="240" y="470" width="170" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-        <text x="325" y="504" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Azure DevOps</text>
-        <text x="325" y="520" class="t-muted" font-size="9" text-anchor="middle">CI + CD</text>
-
-        <rect x="470" y="470" width="140" height="72" rx="6" class="c-mask"/>
-        <rect x="470" y="470" width="140" height="72" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="540" y="504" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ACR</text>
-        <text x="540" y="520" class="t-muted" font-size="9" text-anchor="middle">app image</text>
+        <rect x="1270" y="220" width="230" height="72" rx="6" class="c-mask"/>
+        <rect x="1270" y="220" width="230" height="72" rx="6" class="c-database" stroke-width="1.5"/>
+        <text x="1385" y="254" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Report Content Source</text>
+        <text x="1385" y="270" class="t-muted" font-size="9" text-anchor="middle">HTML reports + metadata</text>
 
         <!-- Connection labels -->
 
 
 
+        <rect x="722.5" y="161" width="30" height="14" rx="3" class="c-mask"/>
+        <text x="737.5" y="171" class="t-security" font-size="8" text-anchor="middle">OIDC</text>
 
 
-        <rect x="1159.6" y="128.5" width="110.8" height="14" rx="3" class="c-mask"/>
-        <text x="1215" y="138.5" class="t-security" font-size="8" text-anchor="middle">OIDC login / callback</text>
-
-        <rect x="193.2" y="486" width="43.6" height="14" rx="3" class="c-mask"/>
-        <text x="215" y="496" class="t-backend" font-size="8" text-anchor="middle">trigger</text>
-
-        <rect x="520.6" y="395" width="38.8" height="14" rx="3" class="c-mask"/>
-        <text x="540" y="405" class="t-backend" font-size="8" text-anchor="middle">deploy</text>
 
         <!-- Legend -->
-        <text x="40" y="671" class="t-primary" font-size="9" font-weight="600">Legend</text>
-        <rect x="40" y="676" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
-        <text x="60" y="684" class="t-muted" font-size="8">External</text>
-        <rect x="138" y="676" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
-        <text x="158" y="684" class="t-muted" font-size="8">Frontend</text>
-        <rect x="236" y="676" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
-        <text x="256" y="684" class="t-muted" font-size="8">Cloud</text>
-        <rect x="319" y="676" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
-        <text x="339" y="684" class="t-muted" font-size="8">Security</text>
-        <rect x="417" y="676" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
-        <text x="437" y="684" class="t-muted" font-size="8">Database</text>
-        <rect x="515" y="676" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-        <text x="535" y="684" class="t-muted" font-size="8">Backend</text>
+        <text x="40" y="591" class="t-primary" font-size="9" font-weight="600">Legend</text>
+        <rect x="40" y="596" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
+        <text x="60" y="604" class="t-muted" font-size="8">External</text>
+        <rect x="138" y="596" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
+        <text x="158" y="604" class="t-muted" font-size="8">Cloud</text>
+        <rect x="221" y="596" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
+        <text x="241" y="604" class="t-muted" font-size="8">Frontend</text>
+        <rect x="319" y="596" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
+        <text x="339" y="604" class="t-muted" font-size="8">Security</text>
+        <rect x="417" y="596" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
+        <text x="437" y="604" class="t-muted" font-size="8">Database</text>
       </svg>
     </div>
 
@@ -636,24 +601,12 @@
       <div class="card">
         <div class="card-header">
           <div class="card-dot cyan"></div>
-          <h3>Identity model</h3>
+          <h3>High-level responsibilities</h3>
         </div>
         <ul>
-          <li>&bull; Một web portal phục vụ cả internal và external users</li>
-          <li>&bull; Next.js app tích hợp trực tiếp Microsoft Entra External ID</li>
-          <li>&bull; Không dùng OAuth2 Proxy; app tự quản lý login, session và callback</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Authorization model</h3>
-        </div>
-        <ul>
-          <li>&bull; Gateway API publish traffic vào app trên AKS</li>
-          <li>&bull; App kiểm tra quyền theo path, slug và role</li>
-          <li>&bull; ACL lưu trong authorization store hoặc metadata database</li>
+          <li>&bull; Public Web Entry là điểm vào logic của hệ thống</li>
+          <li>&bull; Web Portal xử lý UI, login và access control</li>
+          <li>&bull; Authorization Store và Report Content Source là hai miền dữ liệu riêng</li>
         </ul>
       </div>
     </div>

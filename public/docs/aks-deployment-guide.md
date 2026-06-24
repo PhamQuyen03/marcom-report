@@ -189,6 +189,12 @@ Ví dụ:
 - `/reports/partner/*` chỉ external users đã được cấp quyền.
 - `/reports/finance/*` chỉ role finance.
 
+## Cách đọc sơ đồ
+
+- `System Architecture Diagram` chỉ thể hiện runtime architecture ở mức high-level.
+- `Deployment Diagram - AKS` mới là nơi thể hiện CI/CD, ACR và rollout vào cluster.
+- Flow đăng nhập OIDC và rule ACL chi tiết nên để ở section text hoặc sơ đồ riêng nếu cần.
+
 ## SSL trên AKS
 
 Hai hướng phổ biến:

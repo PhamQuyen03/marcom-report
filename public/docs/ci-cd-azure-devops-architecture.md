@@ -66,13 +66,23 @@ Khi đó:
 
 ## System Architecture Diagram
 
-Sơ đồ tổng quan đi theo mô hình web portal trên AKS:
+Sơ đồ hệ thống nên giữ ở mức `logical architecture`:
 
-- `Internal Users` và `External Users` cùng truy cập một portal.
-- `Azure Front Door Premium` là public entry.
-- `Gateway API` publish traffic vào app trong AKS.
-- `Next.js app` tích hợp trực tiếp `Microsoft Entra External ID`.
-- Phân quyền theo path và slug được xử lý trong app.
+- `Internal Users` và `External Users`
+- `Public Web Entry`
+- `Web Portal`
+- `Identity Provider`
+- `Authorization Store`
+- `Report Content Source`
+
+Phần CI/CD, rollout, AKS, Gateway API và auth flow chi tiết không nên nhồi vào sơ đồ này.
+
+## Identity And Access Model
+
+- `Microsoft Entra External ID` là identity provider cho portal.
+- `Web Portal` là nơi xử lý login, callback, session và logout.
+- `Authorization Store` giữ role mapping và ACL theo report/path.
+- `Internal Users` và `External Users` cùng vào một portal nhưng quyền truy cập được kiểm tra riêng ở tầng app.
 
 ## Các giải pháp
 

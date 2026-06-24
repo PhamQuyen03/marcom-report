@@ -71,12 +71,23 @@ public/reports/bao-cao-ai-2026.html</code></pre>
     </section>
 
     <section class="panel">
+      <h2>Identity And Access Model</h2>
+      <ul>
+        <li><code>Microsoft Entra External ID</code> là identity provider cho portal.</li>
+        <li><code>Web Portal</code> tự xử lý login, callback, session và logout.</li>
+        <li><code>Authorization Store</code> giữ role mapping và ACL theo report hoặc path.</li>
+        <li><code>System Architecture Diagram</code> chỉ giữ mức logical high-level, không nhồi CI/CD hay auth flow chi tiết.</li>
+      </ul>
+    </section>
+
+    <section class="panel">
       <h2>Nguyên tắc CI/CD chung</h2>
       <ul>
         <li>Build một lần, deploy một artifact rõ ràng cho từng slug.</li>
         <li>Không build lại trong production stage.</li>
         <li>Validate sớm file slug, route public và smoke check.</li>
         <li>Rollback bằng artifact cũ của chính slug đó.</li>
+        <li>Success hoặc failure đều notify về Microsoft Teams.</li>
       </ul>
     </section>
 
@@ -88,6 +99,7 @@ public/reports/bao-cao-ai-2026.html</code></pre>
         <li>Build artifact hoặc build image.</li>
         <li>Deploy lên môi trường mục tiêu.</li>
         <li>Smoke check <code>/reports/&lt;slug&gt;</code>.</li>
+        <li>Notify Microsoft Teams.</li>
         <li>Nếu cần rollback thì redeploy artifact cũ của slug đó.</li>
       </ol>
     </section>
@@ -97,8 +109,8 @@ public/reports/bao-cao-ai-2026.html</code></pre>
       <p>Đây là giải pháp phù hợp nhất với yêu cầu hiện tại khi repo chính vẫn là app <code>Next.js</code>, công ty đã có platform Kubernetes, ACR, Azure DevOps, team DevOps vận hành và portal cần phục vụ cả internal lẫn external users.</p>
       <iframe class="diagram-frame" src="./diagrams/deployment-aks.html" title="AKS Diagram"></iframe>
       <div class="card" style="margin-top: 16px;">
-        <h3>Public access chuẩn</h3>
-        <p><code>Internal Users / External Users -&gt; Azure Front Door Premium -&gt; Gateway API -&gt; AKS Next.js App -&gt; Microsoft Entra External ID</code></p>
+        <h3>Logical access view</h3>
+        <p><code>Internal Users / External Users -&gt; Public Web Entry -&gt; Web Portal</code></p>
       </div>
       <div class="card" style="margin-top: 16px;">
         <h3>Checklist</h3>
