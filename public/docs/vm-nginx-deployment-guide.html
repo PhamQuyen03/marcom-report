@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VM với Nginx - Only Slug</title>
   <style>
-    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #f7f1ea; color: #201a17; line-height: 1.6; }
-    .page { width: min(1120px, calc(100% - 28px)); margin: 24px auto 40px; }
-    .panel { background: #fffaf5; border: 1px solid #dfd1c4; border-radius: 22px; padding: 24px; margin-bottom: 18px; box-shadow: 0 18px 48px rgba(65, 42, 22, 0.08); }
-    h1, h2, h3 { margin: 0 0 12px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .card { background: #fff; border: 1px solid #dfd1c4; border-radius: 18px; padding: 18px; }
-    .diagram-frame { width: 100%; height: 980px; border: 1px solid #dfd1c4; border-radius: 18px; background: #fff; }
-    code, pre { font-family: Consolas, monospace; }
-    code { background: rgba(164,77,48,.08); padding: 2px 6px; border-radius: 8px; }
-    pre { margin: 0; padding: 16px 18px; background: #201814; color: #f7efe6; border-radius: 18px; overflow: auto; }
-    ul { margin: 0; padding-left: 20px; }
-    @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } .diagram-frame { height: 820px; } }
+    body { margin:0; font-family:"Segoe UI", Arial, sans-serif; background:#f7f1ea; color:#201a17; line-height:1.6; }
+    .page { width:min(1120px, calc(100% - 28px)); margin:24px auto 40px; }
+    .panel { background:#fffaf5; border:1px solid #dfd1c4; border-radius:22px; padding:24px; margin-bottom:18px; box-shadow:0 18px 48px rgba(65,42,22,.08); }
+    h1,h2,h3 { margin:0 0 12px; }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .card { background:#fff; border:1px solid #dfd1c4; border-radius:18px; padding:18px; }
+    .diagram-frame { width:100%; height:980px; border:1px solid #dfd1c4; border-radius:18px; background:#fff; }
+    code,pre { font-family:Consolas, monospace; }
+    code { background:rgba(164,77,48,.08); padding:2px 6px; border-radius:8px; }
+    pre { margin:0; padding:16px 18px; background:#201814; color:#f7efe6; border-radius:18px; overflow:auto; }
+    ul,ol { margin:0; padding-left:20px; }
+    @media (max-width:980px) { .grid-2 { grid-template-columns:1fr; } .diagram-frame { height:820px; } }
   </style>
 </head>
 <body>
@@ -25,54 +25,18 @@
       <h1>Giải pháp VM với Nginx theo mô hình only slug</h1>
       <p>Public endpoint của report chỉ còn một slug ổn định theo dạng <code>/reports/&lt;slug&gt;</code>. File thật vẫn là HTML và Nginx sẽ rewrite sang file tương ứng.</p>
     </section>
-
     <section class="panel">
       <h2>Deployment Diagram</h2>
       <iframe class="diagram-frame" src="./diagrams/deployment-vm.html" title="VM Deployment Diagram"></iframe>
     </section>
-
-    <section class="panel">
-      <h2>Mô hình URL và file system</h2>
-      <div class="grid-2">
-        <div class="card">
-          <h3>Public route</h3>
-          <pre><code>https://domain/reports/nua-dau-nam-t1-t5-2026
-https://domain/reports/bao-cao-ai-2026</code></pre>
-        </div>
-        <div class="card">
-          <h3>File trên VM</h3>
-          <pre><code>/var/www/reports/
-  reports/
-    nua-dau-nam-t1-t5-2026.html
-    bao-cao-ai-2026.html</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Nginx config đề xuất</h2>
-      <pre><code>server {
-    listen 80;
-    server_name example.com www.example.com;
-
-    root /var/www/reports;
-
-    location /reports/ {
-        try_files $uri $uri/ $uri.html =404;
-    }
-}</code></pre>
-      <p style="margin-top: 12px;">Request <code>/reports/bao-cao-ai-2026</code> sẽ map sang file <code>/var/www/reports/reports/bao-cao-ai-2026.html</code>.</p>
-    </section>
-
     <section class="panel">
       <h2>Bootstrap một lần</h2>
       <ul>
-        <li>Tạo VM, DNS, Nginx, SSL, user deploy và webhook Teams.</li>
+        <li>Tạo VM, DNS, Nginx, SSL và user deploy.</li>
         <li>Tạo thư mục <code>/var/www/reports</code>.</li>
         <li>Chuẩn bị SSH key hoặc service connection từ Azure DevOps.</li>
       </ul>
     </section>
-
     <section class="panel">
       <h2>Pipeline tự động mỗi lần deploy</h2>
       <ol>
@@ -80,18 +44,8 @@ https://domain/reports/bao-cao-ai-2026</code></pre>
         <li>Build hoặc lấy artifact của slug.</li>
         <li>Copy file HTML của slug lên VM.</li>
         <li>Smoke check <code>/reports/&lt;slug&gt;</code>.</li>
-        <li>Notify Microsoft Teams.</li>
       </ol>
     </section>
-
-    <section class="panel">
-      <h2>SSL với Let's Encrypt</h2>
-      <pre><code>sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d example.com -d www.example.com
-sudo certbot renew --dry-run</code></pre>
-      <p style="margin-top: 12px;">Nếu domain trỏ đúng về VM, cổng <code>80/443</code> mở và bạn có quyền <code>sudo</code>, thì có thể tự setup SSL và auto-renew.</p>
-    </section>
-
     <section class="panel">
       <h2>Rollback</h2>
       <p>Với mô hình only slug, rollback chỉ là copy lại file HTML cũ của chính slug đó rồi reload Nginx nếu cần.</p>

@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AKS + Next.js - Only Slug</title>
   <style>
-    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #eef3f7; color: #18222d; line-height: 1.6; }
-    .page { width: min(1180px, calc(100% - 28px)); margin: 24px auto 40px; }
-    .panel { background: #f9fbfd; border: 1px solid #d5e0ea; border-radius: 22px; padding: 24px; margin-bottom: 18px; box-shadow: 0 18px 48px rgba(28, 53, 78, 0.08); }
-    h1, h2, h3 { margin: 0 0 12px; }
-    .grid-2, .grid-3 { display: grid; gap: 16px; }
-    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .card { background: #fff; border: 1px solid #d5e0ea; border-radius: 18px; padding: 18px; }
-    code, pre { font-family: Consolas, monospace; }
-    code { background: rgba(15, 91, 141, 0.08); padding: 2px 6px; border-radius: 8px; }
-    pre { margin: 0; padding: 16px 18px; background: #15202b; color: #edf4fb; border-radius: 18px; overflow: auto; }
-    ul, ol { margin: 0; padding-left: 20px; }
-    li + li { margin-top: 8px; }
-    p { margin: 0 0 12px; }
-    @media (max-width: 980px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    body { margin:0; font-family:"Segoe UI", Arial, sans-serif; background:#eef3f7; color:#18222d; line-height:1.6; }
+    .page { width:min(1180px, calc(100% - 28px)); margin:24px auto 40px; }
+    .panel { background:#f9fbfd; border:1px solid #d5e0ea; border-radius:22px; padding:24px; margin-bottom:18px; box-shadow:0 18px 48px rgba(28,53,78,.08); }
+    h1,h2,h3 { margin:0 0 12px; }
+    .grid-2,.grid-3 { display:grid; gap:16px; }
+    .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .card { background:#fff; border:1px solid #d5e0ea; border-radius:18px; padding:18px; }
+    code,pre { font-family:Consolas, monospace; }
+    code { background:rgba(15,91,141,.08); padding:2px 6px; border-radius:8px; }
+    pre { margin:0; padding:16px 18px; background:#15202b; color:#edf4fb; border-radius:18px; overflow:auto; }
+    ul,ol { margin:0; padding-left:20px; }
+    li + li { margin-top:8px; }
+    p { margin:0 0 12px; }
+    @media (max-width:980px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -28,43 +28,14 @@
       <h1>Giải pháp AKS cho app Next.js và report HTML theo mô hình only slug</h1>
       <p>Hướng này giữ nguyên app <code>Next.js</code>, login, docs và report portal hiện tại. Report HTML vẫn nằm trong <code>public/reports</code>, còn public endpoint của report chỉ còn dạng <code>/reports/&lt;slug&gt;</code>.</p>
     </section>
-
     <section class="panel">
       <h2>Vì sao AKS là hướng phù hợp</h2>
       <div class="grid-3">
-        <div class="card">
-          <h3>Repo hiện tại</h3>
-          <p>Đây là app <code>Next.js</code>, không phải static-only.</p>
-        </div>
-        <div class="card">
-          <h3>Platform công ty</h3>
-          <p>Đã có AKS, ACR, Azure DevOps và team DevOps vận hành.</p>
-        </div>
-        <div class="card">
-          <h3>Một web portal duy nhất</h3>
-          <p>App tự tích hợp <code>Microsoft Entra External ID</code> cho cả internal và external users.</p>
-        </div>
+        <div class="card"><h3>Repo hiện tại</h3><p>Đây là app <code>Next.js</code>, không phải static-only.</p></div>
+        <div class="card"><h3>Platform công ty</h3><p>Đã có AKS, ACR, Azure DevOps và team DevOps vận hành.</p></div>
+        <div class="card"><h3>Một web portal duy nhất</h3><p>App tự tích hợp <code>Microsoft Entra External ID</code> cho cả internal và external users.</p></div>
       </div>
     </section>
-
-    <section class="panel">
-      <h2>Mô hình slug-only</h2>
-      <div class="grid-2">
-        <div class="card">
-          <h3>Source</h3>
-          <pre><code>public/reports/
-  nua-dau-nam-t1-t5-2026.html
-  bao-cao-ai-2026.html</code></pre>
-        </div>
-        <div class="card">
-          <h3>Public route</h3>
-          <pre><code>/reports/nua-dau-nam-t1-t5-2026
-/reports/bao-cao-ai-2026</code></pre>
-        </div>
-      </div>
-      <p style="margin-top: 12px;">App sẽ map slug route sang file HTML thực tương ứng trong <code>public/reports</code>.</p>
-    </section>
-
     <section class="panel">
       <h2>Kiến trúc tổng quát</h2>
       <pre><code>Azure Repos / Git
@@ -77,10 +48,8 @@
   -&gt; Microsoft Entra External ID login
   -&gt; Authorization theo path / slug
   -&gt; Public domain
-  -&gt; Smoke check
-  -&gt; Notify Microsoft Teams</code></pre>
+  -&gt; Smoke check</code></pre>
     </section>
-
     <section class="panel">
       <h2>Thành phần chính</h2>
       <div class="grid-2">
@@ -101,42 +70,18 @@
             <li><code>lint</code>.</li>
             <li>Validate report slug.</li>
             <li>Build app, build image, push ACR.</li>
-            <li>Deploy AKS, smoke check và notify Teams.</li>
+            <li>Deploy AKS và smoke check.</li>
           </ul>
         </div>
       </div>
-      <div class="card" style="margin-top: 16px;">
-        <h3>Public entry và publish layer</h3>
-        <p>Lớp này phụ trách nhận request từ domain, áp WAF và route request vào app thông qua publish layer của AKS.</p>
-        <p>Thành phần được chốt là <code>Azure Front Door Premium</code> ở lớp public entry và <code>AKS application routing Gateway API implementation</code> với <code>gatewayClassName: approuting-istio</code> làm publish layer trong cluster.</p>
-      </div>
     </section>
-
-    <section class="panel">
-      <h2>Thứ tự truy cập khuyến nghị</h2>
-      <ul>
-        <li><code>Internal Users / External Users -&gt; Azure Front Door Premium</code>.</li>
-        <li><code>Azure Front Door Premium -&gt; Gateway API</code>.</li>
-        <li><code>Gateway API -&gt; AKS Next.js App</code>.</li>
-        <li><code>AKS Next.js App -&gt; Microsoft Entra External ID</code> cho OIDC login và callback.</li>
-      </ul>
-      <p style="margin-top: 12px;">Khi nói <code>Ingress layer</code> trong tài liệu này thì nên hiểu là <code>Azure Front Door Premium</code> ở bên ngoài và <code>Gateway API</code> ở trong cluster. Phần login và authorization nằm trong app.</p>
-    </section>
-
     <section class="panel">
       <h2>Identity và authorization model</h2>
       <div class="grid-2">
-        <div class="card">
-          <h3>Identity</h3>
-          <p><code>Microsoft Entra External ID</code> là identity provider cho portal. Internal user và external user cùng đi qua flow mà app cấu hình với External ID.</p>
-        </div>
-        <div class="card">
-          <h3>Authorization</h3>
-          <p>App kiểm tra quyền theo path và slug, dùng role mapping hoặc ACL trong database / metadata store.</p>
-        </div>
+        <div class="card"><h3>Identity</h3><p><code>Microsoft Entra External ID</code> là identity provider cho portal. Internal user và external user cùng đi qua flow mà app cấu hình với External ID.</p></div>
+        <div class="card"><h3>Authorization</h3><p>App kiểm tra quyền theo path và slug, dùng role mapping hoặc ACL trong database / metadata store.</p></div>
       </div>
     </section>
-
     <section class="panel">
       <h2>Cách đọc sơ đồ</h2>
       <ul>
@@ -145,51 +90,10 @@
         <li>Flow OIDC và rule ACL chi tiết nên để ở section text hoặc sơ đồ riêng nếu cần.</li>
       </ul>
     </section>
-
-    <section class="panel">
-      <h2>SSL trên AKS</h2>
-      <div class="grid-2">
-        <div class="card">
-          <h3>Hướng 1: cert-manager</h3>
-          <p>Tự động cấp và renew certificate nếu platform đang dùng Let's Encrypt.</p>
-        </div>
-        <div class="card">
-          <h3>Hướng 2: certificate nội bộ</h3>
-          <p>Certificate được lưu vào <code>Kubernetes Secret</code> và Gateway hoặc lớp publish dùng để terminate TLS.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Flow pipeline chuẩn</h2>
-      <ol>
-        <li>Checkout code.</li>
-        <li>Install dependency bằng <code>pnpm</code>.</li>
-        <li>Chạy <code>lint</code>.</li>
-        <li>Validate report slug.</li>
-        <li>Build <code>Next.js</code>.</li>
-        <li>Build Docker image.</li>
-        <li>Push image lên ACR.</li>
-        <li>Deploy lên AKS.</li>
-        <li>Chờ rollout thành công.</li>
-        <li>Smoke check <code>/reports/&lt;slug&gt;</code>.</li>
-        <li>Notify Teams.</li>
-      </ol>
-    </section>
-
     <section class="panel">
       <h2>Rollback</h2>
       <p>Rollback theo chuẩn AKS: rollback deployment hoặc redeploy image tag cũ.</p>
       <pre><code>kubectl rollout undo deployment/marcom-report -n marcom-report</code></pre>
-    </section>
-
-    <section class="panel">
-      <h2>Lưu ý build</h2>
-      <p>Để CI/CD production ổn định, current setup dùng:</p>
-      <ul>
-        <li><code>next dev --turbopack</code> cho local dev.</li>
-        <li><code>next build --webpack</code> cho production build.</li>
-      </ul>
     </section>
   </main>
 </body>

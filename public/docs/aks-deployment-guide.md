@@ -28,13 +28,6 @@ Nếu công ty đã có:
 
 Thì `AKS` là hướng phù hợp hơn so với việc tách riêng một static-only stack.
 
-Lý do:
-
-- Repo hiện tại là app `Next.js`, không phải chỉ có HTML tĩnh.
-- Cần giữ nguyên auth, docs, route và portal.
-- Report HTML chỉ là một phần của app.
-- CI/CD nên bám theo platform chung của công ty.
-
 ## Mô hình slug-only trên app hiện tại
 
 ### Source
@@ -52,24 +45,9 @@ public/
 /reports/<slug>
 ```
 
-Ví dụ:
-
-```text
-/reports/nua-dau-nam-t1-t5-2026
-/reports/bao-cao-ai-2026
-```
-
 ### Mapping
 
-App `Next.js` sẽ map:
-
-- `/reports/bao-cao-ai-2026`
-- Sang file thực `/reports/bao-cao-ai-2026.html`
-
-Như vậy:
-
-- Người dùng chỉ thấy slug.
-- Source vẫn giữ HTML file dễ quản lý.
+App `Next.js` sẽ map slug route sang file HTML thực tương ứng trong `public/reports`.
 
 ## Kiến trúc tổng quát
 
@@ -85,35 +63,29 @@ Azure Repos / Git
   -> Authorization theo path / slug
   -> Public domain
   -> Smoke check
-  -> Notify Microsoft Teams
 ```
 
 ## Thành phần chính
 
 ### 1. Repository
 
-Chứa:
-
-- Source `Next.js`.
-- `public/reports/*.html`.
-- `Dockerfile.aks`.
-- Manifest hoặc chart cho AKS.
-- Pipeline Azure DevOps.
+- Source `Next.js`
+- `public/reports/*.html`
+- `Dockerfile.aks`
+- Manifest hoặc chart cho AKS
+- Pipeline Azure DevOps
 
 ### 2. Azure DevOps
 
-Phụ trách:
-
-- Checkout source.
-- `pnpm install`.
-- `lint`.
-- Validate report slug.
-- Build app.
-- Build image.
-- Push `ACR`.
-- Deploy `AKS`.
-- Smoke check.
-- Notify Teams.
+- Checkout source
+- `pnpm install`
+- `lint`
+- Validate report slug
+- Build app
+- Build image
+- Push `ACR`
+- Deploy `AKS`
+- Smoke check
 
 ### 3. ACR
 
@@ -125,25 +97,14 @@ marcom-report:<build-number>
 
 ### 4. AKS
 
-Chạy:
-
 - `Deployment`
 - `Service`
 - App `Next.js`
 
 ### 5. Public entry và publish layer
 
-Phụ trách:
-
-- Nhận request public từ domain.
-- Enforce WAF và rule ở lớp edge.
-- Route request vào `Gateway API` của AKS.
-- Publish traffic vào app `Next.js`.
-
-Thành phần khuyến nghị:
-
-- `Azure Front Door Premium` là public entry.
-- `AKS application routing Gateway API implementation` là publish layer trong cluster.
+- `Azure Front Door Premium` là public entry
+- `AKS application routing Gateway API implementation` là publish layer trong cluster
 
 Lưu ý:
 
@@ -152,19 +113,11 @@ Lưu ý:
 
 ## Thứ tự truy cập khuyến nghị
 
-Luồng truy cập nên chốt như sau:
-
 - `Internal Users` hoặc `External Users`
 - `Azure Front Door Premium`
 - `Gateway API`
 - `AKS Next.js App`
 - `Microsoft Entra External ID`
-
-Nghĩa là trong tài liệu và triển khai thực tế:
-
-- `Azure Front Door Premium` là lớp public entry.
-- `Gateway API` là lớp publish trong cluster.
-- `Next.js app` là nơi tích hợp trực tiếp OIDC và xử lý authorization.
 
 ## Identity và authorization model
 
@@ -197,13 +150,10 @@ Ví dụ:
 
 ## SSL trên AKS
 
-Hai hướng phổ biến:
-
 ### Hướng 1: `cert-manager`
 
 - Cấp cert tự động.
 - Renew tự động.
-- Phù hợp nếu platform đang dùng `Let's Encrypt`.
 
 ### Hướng 2: certificate nội bộ
 
@@ -231,17 +181,6 @@ Ví dụ:
 kubectl rollout undo deployment/marcom-report -n marcom-report
 ```
 
-## Notify Microsoft Teams
-
-Nên gửi:
-
-- Pipeline name.
-- Image tag.
-- Môi trường.
-- URL public.
-- Trạng thái success hoặc failure.
-- Thời gian deploy.
-
 ## Checklist go-live
 
 - Azure DevOps build pass.
@@ -255,13 +194,3 @@ Nên gửi:
 - DNS trỏ đúng.
 - TLS hoạt động.
 - `/reports/<slug>` mở được.
-- Notify Teams hoạt động.
-
-## Rủi ro chính
-
-### 1. Build app fail trong CI/CD
-
-Giảm rủi ro:
-
-- Giữ production build ổn định bằng `webpack`.
-- Để `dev` tiếp tục dùng `Turbopack`.

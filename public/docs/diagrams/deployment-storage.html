@@ -496,12 +496,12 @@
         <div class="pulse-dot"></div>
         <h1>Deployment Diagram - Azure Storage Static Website + CDN</h1>
       </div>
-      <p class="subtitle">Slug-only publish với static website, rewrite và Teams notification</p>
+      <p class="subtitle">Slug-only publish với static website và rewrite</p>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container">
-      <svg viewBox="0 0 1560 640" role="img" aria-label="Deployment Diagram - Azure Storage Static Website + CDN — Slug-only publish với static website, rewrite và Teams notification (architecture diagram)">
+      <svg viewBox="0 0 1560 640" role="img" aria-label="Deployment Diagram - Azure Storage Static Website + CDN — Slug-only publish với static website và rewrite (architecture diagram)">
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -528,9 +528,6 @@
         <rect x="228" y="258" width="954" height="334" rx="12" class="c-region" stroke-width="1"/>
         <text x="236" y="276" class="t-cloud" font-size="9" font-weight="600">Azure Delivery Path</text>
 
-        <rect x="1218" y="478" width="224" height="114" rx="12" class="c-region" stroke-width="1"/>
-        <text x="1226" y="496" class="t-cloud" font-size="9" font-weight="600">Notification</text>
-
         <!-- Connection paths (before components for correct z-order) -->
         <path d="M 190 316 L 250 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 410 316 L 470 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
@@ -539,7 +536,6 @@
         <path d="M 1160 316 L 1240 316" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 1410 316 L 1470 316" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path d="M 795 352 L 795 352 L 795 528 Q 795 536 803 536 L 1052 536 Q 1060 536 1060 528 L 1060 500" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 1150 536 L 1240 536" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
 
         <!-- Components -->
         <rect x="40" y="280" width="150" height="72" rx="6" class="c-mask"/>
@@ -582,11 +578,6 @@
         <text x="1060" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Deploy Result</text>
         <text x="1060" y="550" class="t-muted" font-size="9" text-anchor="middle">success or failure</text>
 
-        <rect x="1240" y="500" width="180" height="72" rx="6" class="c-mask"/>
-        <rect x="1240" y="500" width="180" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="1330" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Teams</text>
-        <text x="1330" y="550" class="t-muted" font-size="9" text-anchor="middle">notify channel</text>
-
         <!-- Connection labels -->
         <rect x="198.2" y="296" width="43.6" height="14" rx="3" class="c-mask"/>
         <text x="220" y="306" class="t-backend" font-size="8" text-anchor="middle">trigger</text>
@@ -596,7 +587,6 @@
         <text x="660" y="306" class="t-backend" font-size="8" text-anchor="middle">upload</text>
         <rect x="910.6" y="296" width="38.8" height="14" rx="3" class="c-mask"/>
         <text x="930" y="306" class="t-muted" font-size="8" text-anchor="middle">origin</text>
-
 
 
 
@@ -624,16 +614,6 @@
         <ul>
           <li>&bull; Re-upload artifact slug trước đó</li>
           <li>&bull; Purge CDN nếu cần</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Notification</h3>
-        </div>
-        <ul>
-          <li>&bull; Success và failure đều gửi về Microsoft Teams</li>
         </ul>
       </div>
     </div>

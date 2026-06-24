@@ -5,36 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Azure DevOps CI/CD - Only Slug</title>
   <style>
-    :root {
-      --panel: #fffaf5;
-      --card: #ffffff;
-      --text: #201a17;
-      --muted: #6d6259;
-      --line: #dfd1c4;
-      --accent: #a44d30;
-      --shadow: 0 18px 48px rgba(65, 42, 22, 0.08);
-      --radius: 22px;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; color: var(--text); background: linear-gradient(180deg, #f8f2ec 0%, #f3ece5 100%); line-height: 1.6; }
-    .page { width: calc(100% - 24px); margin: 12px auto 32px; }
-    .panel { background: var(--panel); border: 1px solid rgba(131, 101, 72, 0.16); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 18px; }
-    .hero { background: linear-gradient(135deg, rgba(164, 77, 48, 0.08), rgba(255, 255, 255, 0.96)), var(--card); }
-    .eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
-    h1, h2, h3 { margin: 0 0 12px; line-height: 1.2; }
-    h1 { font-size: clamp(34px, 5vw, 52px); }
-    h2 { font-size: 26px; }
-    .subtitle { font-size: 18px; color: var(--muted); max-width: 1080px; }
-    .hero-stats { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 18px; }
-    .hero-stats .card { flex: 1 1 220px; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
-    .diagram-frame { width: 100%; height: 980px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
-    ul, ol { margin: 0; padding-left: 20px; }
-    li + li { margin-top: 8px; }
-    code, pre { font-family: Consolas, monospace; }
-    code { background: rgba(164, 77, 48, 0.08); padding: 2px 6px; border-radius: 8px; }
-    pre { margin: 0; padding: 16px 18px; background: #201814; color: #f7efe6; border-radius: 18px; overflow: auto; }
-    @media (max-width: 980px) { .diagram-frame { height: 820px; } .page { width: calc(100% - 16px); } }
+    :root { --panel:#fffaf5; --card:#ffffff; --text:#201a17; --muted:#6d6259; --line:#dfd1c4; --accent:#a44d30; --shadow:0 18px 48px rgba(65,42,22,.08); --radius:22px; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:"Segoe UI", Arial, sans-serif; color:var(--text); background:linear-gradient(180deg,#f8f2ec 0%,#f3ece5 100%); line-height:1.6; }
+    .page { width:calc(100% - 24px); margin:12px auto 32px; }
+    .panel { background:var(--panel); border:1px solid rgba(131,101,72,.16); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; margin-bottom:18px; }
+    .hero { background:linear-gradient(135deg, rgba(164,77,48,.08), rgba(255,255,255,.96)), var(--card); }
+    .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.08em; font-size:12px; font-weight:700; margin-bottom:8px; }
+    h1,h2,h3 { margin:0 0 12px; line-height:1.2; }
+    h1 { font-size:clamp(34px, 5vw, 52px); }
+    h2 { font-size:26px; }
+    .subtitle { font-size:18px; color:var(--muted); max-width:1080px; }
+    .hero-stats { display:flex; flex-wrap:wrap; gap:16px; margin-top:18px; }
+    .hero-stats .card { flex:1 1 220px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; }
+    .diagram-frame { width:100%; height:980px; border:1px solid var(--line); border-radius:18px; background:#fff; }
+    ul,ol { margin:0; padding-left:20px; }
+    li + li { margin-top:8px; }
+    code,pre { font-family:Consolas, monospace; }
+    code { background:rgba(164,77,48,.08); padding:2px 6px; border-radius:8px; }
+    pre { margin:0; padding:16px 18px; background:#201814; color:#f7efe6; border-radius:18px; overflow:auto; }
+    @media (max-width:980px) { .diagram-frame { height:820px; } .page { width:calc(100% - 16px); } }
   </style>
 </head>
 <body>
@@ -42,18 +33,13 @@
     <section class="panel hero">
       <div class="eyebrow">Azure DevOps / CI/CD Architecture</div>
       <h1>Mô hình only slug cho report HTML</h1>
-      <p class="subtitle">
-        Public endpoint của mỗi report chỉ còn một slug ổn định theo dạng <code>/reports/&lt;slug&gt;</code>.
-        Không dùng <code>version path</code> và không dùng <code>latest</code>. Rollback được xử lý bằng artifact cũ của chính slug đó.
-      </p>
+      <p class="subtitle">Public endpoint của mỗi report chỉ còn một slug ổn định theo dạng <code>/reports/&lt;slug&gt;</code>. Không dùng <code>version path</code> và không dùng <code>latest</code>. Rollback được xử lý bằng artifact cũ của chính slug đó.</p>
       <div class="hero-stats">
         <div class="card"><h3>Public URL</h3><p><code>/reports/&lt;slug&gt;</code></p></div>
         <div class="card"><h3>Artifact</h3><p>Một artifact rõ ràng cho mỗi slug.</p></div>
         <div class="card"><h3>Rollback</h3><p>Redeploy artifact hoặc image cũ của cùng slug.</p></div>
-        <div class="card"><h3>Notify</h3><p>Success và failure đều gửi Teams.</p></div>
       </div>
     </section>
-
     <section class="panel">
       <h2>Quy ước route</h2>
       <pre><code>Public endpoint:
@@ -64,12 +50,10 @@ Source file:
 public/reports/nua-dau-nam-t1-t5-2026.html
 public/reports/bao-cao-ai-2026.html</code></pre>
     </section>
-
     <section class="panel">
       <h2>System Architecture Diagram</h2>
       <iframe class="diagram-frame" src="./diagrams/system-overview.html" title="System Architecture Diagram"></iframe>
     </section>
-
     <section class="panel">
       <h2>Identity And Access Model</h2>
       <ul>
@@ -79,7 +63,6 @@ public/reports/bao-cao-ai-2026.html</code></pre>
         <li><code>System Architecture Diagram</code> chỉ giữ mức logical high-level, không nhồi CI/CD hay auth flow chi tiết.</li>
       </ul>
     </section>
-
     <section class="panel">
       <h2>Nguyên tắc CI/CD chung</h2>
       <ul>
@@ -87,10 +70,8 @@ public/reports/bao-cao-ai-2026.html</code></pre>
         <li>Không build lại trong production stage.</li>
         <li>Validate sớm file slug, route public và smoke check.</li>
         <li>Rollback bằng artifact cũ của chính slug đó.</li>
-        <li>Success hoặc failure đều notify về Microsoft Teams.</li>
       </ul>
     </section>
-
     <section class="panel">
       <h2>Luồng pipeline chuẩn</h2>
       <ol>
@@ -99,20 +80,18 @@ public/reports/bao-cao-ai-2026.html</code></pre>
         <li>Build artifact hoặc build image.</li>
         <li>Deploy lên môi trường mục tiêu.</li>
         <li>Smoke check <code>/reports/&lt;slug&gt;</code>.</li>
-        <li>Notify Microsoft Teams.</li>
         <li>Nếu cần rollback thì redeploy artifact cũ của slug đó.</li>
       </ol>
     </section>
-
     <section class="panel">
       <h2>Giải pháp: AKS</h2>
       <p>Đây là giải pháp phù hợp nhất với yêu cầu hiện tại khi repo chính vẫn là app <code>Next.js</code>, công ty đã có platform Kubernetes, ACR, Azure DevOps, team DevOps vận hành và portal cần phục vụ cả internal lẫn external users.</p>
       <iframe class="diagram-frame" src="./diagrams/deployment-aks.html" title="AKS Diagram"></iframe>
-      <div class="card" style="margin-top: 16px;">
+      <div class="card" style="margin-top:16px;">
         <h3>Logical access view</h3>
         <p><code>Internal Users / External Users -&gt; Public Web Entry -&gt; Web Portal</code></p>
       </div>
-      <div class="card" style="margin-top: 16px;">
+      <div class="card" style="margin-top:16px;">
         <h3>Checklist</h3>
         <ul>
           <li>Build image <code>Next.js</code>.</li>
@@ -123,14 +102,8 @@ public/reports/bao-cao-ai-2026.html</code></pre>
           <li>Tích hợp <code>Microsoft Entra External ID</code> trực tiếp trong app.</li>
           <li>Kiểm tra quyền theo path và slug ở tầng app.</li>
           <li>Smoke check <code>/reports/&lt;slug&gt;</code>.</li>
-          <li>Notify Teams.</li>
         </ul>
       </div>
-    </section>
-
-    <section class="panel">
-      <h2>Khuyến nghị thực tế hiện tại</h2>
-      <p>Với bối cảnh hiện tại, hướng nên chốt để đồng bộ nhất là <code>AKS</code>. Các giải pháp còn lại nên coi là phương án thay thế theo governance, chi phí hoặc mục đích riêng.</p>
     </section>
   </main>
 </body>

@@ -496,12 +496,12 @@
         <div class="pulse-dot"></div>
         <h1>Deployment Diagram - VM with Nginx</h1>
       </div>
-      <p class="subtitle">Slug-only publish với Nginx rewrite và Teams notification</p>
+      <p class="subtitle">Slug-only publish với Nginx rewrite</p>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container">
-      <svg viewBox="0 0 1580 660" role="img" aria-label="Deployment Diagram - VM with Nginx — Slug-only publish với Nginx rewrite và Teams notification (architecture diagram)">
+      <svg viewBox="0 0 1580 660" role="img" aria-label="Deployment Diagram - VM with Nginx — Slug-only publish với Nginx rewrite (architecture diagram)">
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -528,9 +528,6 @@
         <rect x="718" y="268" width="714" height="324" rx="12" class="c-region" stroke-width="1"/>
         <text x="726" y="286" class="t-cloud" font-size="9" font-weight="600">VM Hosting</text>
 
-        <rect x="1348" y="478" width="194" height="114" rx="12" class="c-region" stroke-width="1"/>
-        <text x="1356" y="496" class="t-cloud" font-size="9" font-weight="600">Notification</text>
-
         <!-- Connection paths (before components for correct z-order) -->
         <path d="M 210 326 L 270 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 450 326 L 520 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
@@ -539,7 +536,6 @@
         <path d="M 1170 326 L 1240 326" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 1410 326 L 1470 326" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path d="M 1080 362 L 1080 362 L 1080 528 Q 1080 536 1088 536 L 1242 536 Q 1250 536 1250 528 L 1250 500" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 1340 536 L 1370 536" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
 
         <!-- Components -->
         <rect x="40" y="290" width="170" height="72" rx="6" class="c-mask"/>
@@ -582,11 +578,6 @@
         <text x="1250" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Deploy Result</text>
         <text x="1250" y="550" class="t-muted" font-size="9" text-anchor="middle">success or failure</text>
 
-        <rect x="1370" y="500" width="150" height="72" rx="6" class="c-mask"/>
-        <rect x="1370" y="500" width="150" height="72" rx="6" class="c-external" stroke-width="1.5"/>
-        <text x="1445" y="534" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Microsoft Teams</text>
-        <text x="1445" y="550" class="t-muted" font-size="9" text-anchor="middle">notify channel</text>
-
         <!-- Connection labels -->
         <rect x="218.2" y="306" width="43.6" height="14" rx="3" class="c-mask"/>
         <text x="240" y="316" class="t-backend" font-size="8" text-anchor="middle">trigger</text>
@@ -595,7 +586,6 @@
 
         <rect x="921.2" y="306" width="67.6" height="14" rx="3" class="c-mask"/>
         <text x="955" y="316" class="t-muted" font-size="8" text-anchor="middle">content root</text>
-
 
 
 
@@ -623,16 +613,6 @@
         <ul>
           <li>&bull; Restore file slug trước đó</li>
           <li>&bull; Reload Nginx nếu cần</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-dot violet"></div>
-          <h3>Notification</h3>
-        </div>
-        <ul>
-          <li>&bull; Success và failure đều gửi về Microsoft Teams</li>
         </ul>
       </div>
     </div>
